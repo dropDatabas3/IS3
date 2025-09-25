@@ -4,6 +4,7 @@ import { useReducer, FC, useEffect, useCallback } from "react";
 import { CoursesContext, coursesReducer } from ".";
 import { Category, Course, CreateCoursesDto, UpdateCoursesDto, Comment, User , Rating} from "@/types";
 import { courseMapper, useToast , commentMapper} from "@/utils";
+import apiUrl from "@/utils/api";
 import Cookies from "js-cookie";
 
 interface CoursesProviderProps {
@@ -42,7 +43,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
 
   const fetchCourses = async () => {
     try {
-      const reponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses`);
+  const reponse = await fetch(`${apiUrl()}/courses`);
       if (reponse.ok) {
         const data = await reponse.json();
         console.log("Courses from server: ", data);
@@ -60,7 +61,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   const getComments = useCallback(async (courseId: string) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/comment/${courseId}`
+        `${apiUrl()}/comment/${courseId}`
       );
       if (response.status === 404) {
         // Si el servidor responde con 404, considera que no hay comentarios
@@ -83,7 +84,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   const getRatings = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/rating`
+        `${apiUrl()}/rating`
       );
       const data = await response.json();
       if (response.status !== 200) {
@@ -104,7 +105,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         return;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/comment`,
+        `${apiUrl()}/comment`,
         {
           method: "POST",
           headers: {
@@ -138,7 +139,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         user_id
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/comment`,
+        `${apiUrl()}/comment`,
         {
           method: "PUT",
           headers: {
@@ -168,7 +169,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         return;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/rating`,
+        `${apiUrl()}/rating`,
         {
           method: "POST",
           headers: {
@@ -201,7 +202,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         user_id
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/rating`,
+        `${apiUrl()}/rating`,
         {
           method: "PUT",
           headers: {
@@ -231,7 +232,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         return;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/courses/create`,
+        `${apiUrl()}/courses/create`,
         {
           method: "POST",
           headers: {
@@ -259,7 +260,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
       if (!token) {
         return;
       }
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/${id}`, {
+  fetch(`${apiUrl()}/courses/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -287,7 +288,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
       }
       console.log("course updated: ", course);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/courses/update/${course.id}`,
+  `${apiUrl()}/courses/update/${course.id}`,
         {
           method: "PUT",
           headers: {
@@ -317,7 +318,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   const filterCourses = async (search: string) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/courses?filter=${search}`
+  `${apiUrl()}/courses?filter=${search}`
       );
       const data = await response.json();
       const courses = data.map((course: any) => courseMapper(course));
@@ -335,7 +336,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         return;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/myCourses/`,
+        `${apiUrl()}/myCourses/`,
         {
           method: "GET",
           headers: {
@@ -360,7 +361,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   const newCategory = async (category: string) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/category/create`,
+        `${apiUrl()}/category/create`,
         {
           method: "POST",
           headers: {
@@ -383,7 +384,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   const getCategories = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/categories`
+        `${apiUrl()}/categories`
       );
       const data = await response.json();
       if (response.status !== 200) {
@@ -403,7 +404,7 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         return;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/enroll`,
+        `${apiUrl()}/enroll`,
         {
           method: "POST",
           headers: {

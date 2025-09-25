@@ -1,5 +1,7 @@
 package config
 
+import "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+
 import (
 	"fmt"
 
@@ -15,7 +17,7 @@ func NewConnection(dsn string) *gorm.DB {
 
 	fmt.Println("Connection Opened to Database")
 
-	//db.AutoMigrate(model.User{}, model.Course{}, model.Categories{}, model.Inscripto{}, model.Ratings{}, model.Comments{})
+	db.AutoMigrate(model.User{}, model.Course{}, model.Categories{}, model.Inscripto{}, model.Ratings{}, model.Comments{})
 
 	return db
 	// defer db.Close()

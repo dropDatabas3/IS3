@@ -9,6 +9,8 @@ import (
 
 // AppRoutes es la función que se encarga de definir las rutas de la aplicación
 func AppRoutes(engine *gin.Engine, db *gorm.DB) {
+	// Registrar rutas de health para checks simples
+	HealthRoutes(engine.Group("/"))
 	InscriptionController, InscriptionService := adapter.InscriptionsAdapter(db)
 	UserController, UserService := adapter.UserAdapter(db)
 

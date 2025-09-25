@@ -4,6 +4,7 @@ import cookies from "js-cookie";
 import { AuthContext, authReducer } from ".";
 import { LoginDto, RegisterDto, AuthResponse, User } from "@/types";
 import { useToast } from "@/utils";
+import apiUrl from "@/utils/api";
 
 export interface AuthState {
   user: User | null;
@@ -39,7 +40,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       }
       console.log("RegisterDTO: ", registerDto);
       const reponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/register`,
+        `${apiUrl()}/users/register`,
         {
           method: "POST",
           headers: {
@@ -73,7 +74,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         return false;
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        `${apiUrl()}/auth/login`,
         {
           method: "POST",
           body: JSON.stringify(loginDto),
@@ -105,7 +106,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
     try {
       const reponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
+        `${apiUrl()}/auth/refresh-token`,
         {
           method: "POST",
           headers: {

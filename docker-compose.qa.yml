@@ -1,0 +1,55 @@
+version: '3.8'
+
+networks:
+  appnet:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${QA_PGUSER:-app}
+      - POSTGRES_PASSWORD=${QA_PGPASSWORD:-password}
+      - POSTGRES_DB=${QA_PGDATABASE:-app}
+      - PGDATA=${QA_PGDATA:-/var/lib/postgresql/data/pgdata}
+    volumes:
+      - db_data_qa:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - appnet
+
+  backend:
+    image: is3-backend:${QA_BACKEND_TAG:-qa}
+    environment:
+      - ENV=qa
+      - PORT=8000
+      - DATABASE_URL=${QA_DATABASE_URL:-postgres://app:password@db:5432/app?sslmode=disable}
+      - PGHOST=${QA_PGHOST:-db}
+      - PGPORT=${QA_PGPORT:-5432}
+      - PGUSER=${QA_PGUSER:-app}
+      - PGPASSWORD=${QA_PGPASSWORD:-password}
+      - PGDATABASE=${QA_PGDATABASE:-app}
+    depends_on:
+      - db
+    networks:
+      - appnet
+    ports:
+      - "8001:8000"
+
+  frontend:
+    image: is3-frontend:${QA_FRONTEND_TAG:-qa}
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=${QA_NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      - INTERNAL_API=${QA_INTERNAL_API:-http://backend:8000}
+    depends_on:
+      - backend
+    networks:
+      - appnet
+    ports:
+      - "3001:3000"
+
+volumes:
+  db_data_qa:

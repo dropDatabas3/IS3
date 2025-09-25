@@ -1,32 +1,104 @@
-version: '3'
+version: '3.8'
+
+networks:
+  appnet:
+    driver: bridge
+
 services:
-  frontend:
-    build:
-      context: ./ucc-arq-soft-front
+  # Production DB and app
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${PGUSER:-app}
+      - POSTGRES_PASSWORD=${PGPASSWORD:-password}
+      - POSTGRES_DB=${PGDATABASE:-app}
+      - PGDATA=${PGDATA:-/var/lib/postgresql/data/pgdata}
+    volumes:
+      - db_data:/var/lib/postgresql/data
     ports:
-      - 3000:3000
+      - "5432:5432"
+    networks:
+      - appnet
+
+  backend:
+    image: is3-backend:v1.0
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - PORT=8000
+      - DATABASE_URL=${DATABASE_URL:-postgres://app:password@db:5432/app?sslmode=disable}
+      - PGHOST=${PGHOST:-db}
+      - PGPORT=${PGPORT:-5432}
+      - PGUSER=${PGUSER:-app}
+      - PGPASSWORD=${PGPASSWORD:-password}
+      - PGDATABASE=${PGDATABASE:-app}
+    depends_on:
+      - db
+    networks:
+      - appnet
+
+  frontend:
+    image: is3-frontend:v1.0
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - INTERNAL_API=${INTERNAL_API:-http://backend:8000}
+    depends_on:
+      - backend
+    networks:
+      - appnet
+
+  # QA DB and app (separate ports and volumes)
+  db_qa:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${QA_PGUSER:-app}
+      - POSTGRES_PASSWORD=${QA_PGPASSWORD:-password}
+      - POSTGRES_DB=${QA_PGDATABASE:-app}
+      - PGDATA=${QA_PGDATA:-/var/lib/postgresql/data/pgdata}
+    volumes:
+      - db_data_qa:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - appnet
+
+  backend_qa:
+    image: is3-backend:v1.0
+    ports:
+      - "8001:8000"
+    environment:
+      - ENV=qa
+      - PORT=8000
+      - DATABASE_URL=${QA_DATABASE_URL:-postgres://app:password@db_qa:5432/app?sslmode=disable}
+      - PGHOST=${QA_PGHOST:-db_qa}
+      - PGPORT=${QA_PGPORT:-5432}
+      - PGUSER=${QA_PGUSER:-app}
+      - PGPASSWORD=${QA_PGPASSWORD:-password}
+      - PGDATABASE=${QA_PGDATABASE:-app}
+    depends_on:
+      - db_qa
+    networks:
+      - appnet
+
+  frontend_qa:
+    image: is3-frontend:v1.0
+    ports:
+      - "3001:3000"
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-      - NEXT_PUBLIC_CLOUDINARY_URL=${NEXT_PUBLIC_CLOUDINARY_URL} 
-      - NEXT_PUBLIC_UPLOAD_PRESET=${NEXT_PUBLIC_UPLOAD_PRESET}
-  backend:
-    build:
-      context: ./ucc-soft-arch-golang
-    ports:
-      - 8000:8000
-    environment:
-      - ENV=development
-      - PORT=8000
-      - POSTGRESQL_PRIVATE_URL=${POSTGRESQL_PRIVATE_URL}
-      - DATABASE_URL=${DATABASE_URL} 
-      - PGDATA=${PGDATA}
-      - PGDATABASE=${PGDATABASE} 
-      - PGHOST=${PGHOST}
-      - PGPASSWORD=${PGPASSWORD} 
-      - PGPORT=${PGPORT} 
-      - PGUSER=${PGUSER}
-      - POSGRESS_DB=${POSGRESS_DB} 
-      - POSGRES_PASSWORD=${POSGRES_PASSWORD} 
-      - POSGRES_USER=${POSGRES_USER}
-      - SSL_CERT_DAYS=${SSL_CERT_DAYS}
+      - NEXT_PUBLIC_API_URL=${QA_NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      - INTERNAL_API=${QA_INTERNAL_API:-http://backend_qa:8000}
+    depends_on:
+      - backend_qa
+    networks:
+      - appnet
+
+volumes:
+  db_data:
+  db_data_qa:
