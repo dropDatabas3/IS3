@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 import { Providers } from "@/providers";
 import { Navbar } from "@/components";
@@ -21,6 +22,8 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body className={`${inter.className} slate-50`}>
+          {/* Load runtime config before the app uses it */}
+          <Script id="runtime-config" src="/runtime-config.js" strategy="beforeInteractive" />
           <header className="flex justify-center ">
             <Navbar />
           </header>
