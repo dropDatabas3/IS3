@@ -1,4 +1,4 @@
-# Decisiones del Proyecto (explicado de forma simple y formal)
+# Decisiones del Proyecto
 
 Este documento resume qué hicimos, por qué lo hicimos y cómo comprobamos que funciona, siguiendo los puntos que pide el trabajo práctico. Evitamos jerga innecesaria y lo contamos "con nuestras palabras".
 
