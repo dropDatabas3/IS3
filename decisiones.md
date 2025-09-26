@@ -123,4 +123,128 @@ Notas:
 
 Con estos pasos, el entorno debería arrancar con la misma configuración en cualquier máquina que tenga Docker/Compose instalado.
 
+---
+
+## Elección de la aplicación y tecnología utilizada
+Se optó por una arquitectura simple de 3 capas: frontend (Next.js/React), backend (Go + Gin + GORM) y Postgres como base de datos relacional. Razones:
+- Go ofrece binarios livianos y tiempos de arranque rápidos para servicios containerizados.
+- Next.js facilita SSR/ISR y empaqueta un frontend moderno en una sola imagen.
+- PostgreSQL es un estándar robusto, soporta tipos avanzados y se integra bien con GORM.
+
+## Elección de imagen base y justificación
+Backend:
+- `golang:1.22-alpine` en la etapa build: imagen oficial, liviana (Alpine) + herramientas necesarias.
+- `alpine:latest` para runtime: minimiza superficie de ataque y tamaño final; sólo se copian el binario y certificados.
+Frontend:
+- `node:18-alpine` en etapas `deps`, `builder` y `runner` para mantener consistencia y optimizar tamaño. Node 18 es LTS estable.
+
+Beneficios de multi-stage:
+- Reduce a ~40MB (backend) y evita incluir toolchain Go completo.
+- Separa dependencias de build (npm ci) de runtime.
+
+## Elección de base de datos y justificación
+- PostgreSQL 15 (imagen `postgres:15-alpine`): soporte a features modernas, ecosistema amplio, buena integración con ORMs. Uso de Alpine minimiza tamaño de capa.
+- Separación de instancias (prod y qa) para evitar contaminación de datos y permitir pruebas paralelas.
+
+## Estructura y justificación del Dockerfile (Backend)
+Etapas:
+1. build: descarga módulos, compila con `CGO_ENABLED=0` para binario estático.
+2. runtime: sólo binario + certificados -> menor superficie.
+Decisiones clave:
+- `CGO_ENABLED=0` simplifica la portabilidad.
+- `apk add build-base` sólo en build stage.
+- `ENTRYPOINT` directo al binario; `EXPOSE 8000` documenta el puerto.
+
+## Estructura y justificación del Dockerfile (Frontend)
+Etapas:
+1. deps: instala dependencias con `npm ci` (reproducible).
+2. builder: copia código y ejecuta `npm run build` con `ARG NEXT_PUBLIC_API_URL` para incrustar endpoint.
+3. runner: imagen final sólo con `.next`, `public`, `node_modules` necesarios.
+Decisiones:
+- `npm ci` asegura reproducción exacta según lockfile.
+- Uso de build args para API pública (aunque luego se separó imagen QA para distinto endpoint).
+
+## Configuración de QA y PROD (variables de entorno)
+En `docker-compose.yaml` se definen dos conjuntos de servicios:
+- `backend` / `frontend` / `db` (prod)
+- `backend_qa` / `frontend_qa` / `db_qa` (qa)
+
+Variables diferenciadas:
+- Conexión DB: `DATABASE_URL` vs `QA_DATABASE_URL` + `PGHOST=db` vs `PGHOST=db_qa`.
+- API pública frontend: `NEXT_PUBLIC_API_URL=http://localhost:8000` (prod) y en imagen QA `http://localhost:8001`.
+- API interna SSR: `INTERNAL_API=http://backend:8000` y `INTERNAL_API=http://backend_qa:8000`.
+
+## Estrategia de persistencia de datos (volúmenes)
+Volúmenes declarados:
+- `db_data` montado en `/var/lib/postgresql/data` para prod.
+- `db_data_qa` para QA.
+Justificación:
+- Permite reiniciar contenedores sin perder datos.
+- Mantiene independencia entre entornos y evita contaminación cruzada.
+
+## Estrategia de versionado y publicación
+- Tag semántico inicial: `v1.0` creado y pusheado al repositorio Git.
+- Imágenes Docker etiquetadas: `is3-backend:v1.0`, `is3-frontend:v1.0`, `is3-frontend:qa` (local) y publicadas como `nallarmariano/is3-*`.
+- Tags adicionales recomendados: `latest` para el tag estable actual y `qa` para pre-release / validación.
+- Script `scripts/push_images.ps1` automatiza retag y push (stable/qa/latest).
+
+## Evidencia de funcionamiento
+1. Contenedores levantados (prod + qa simultáneo):
+```
+docker compose -f docker-compose.yaml ps
+NAME               IMAGE                                   PORTS
+is3-frontend-1     nallarmariano/is3-frontend:v1.0         0.0.0.0:3000->3000
+is3-frontend_qa-1  nallarmariano/is3-frontend:qa           0.0.0.0:3001->3000
+is3-backend-1      nallarmariano/is3-backend:v1.0          0.0.0.0:8000->8000
+is3-backend_qa-1   nallarmariano/is3-backend:v1.0          0.0.0.0:8001->8000
+is3-db-1           postgres:15-alpine                      0.0.0.0:5432->5432
+is3-db_qa-1        postgres:15-alpine                      0.0.0.0:5433->5432
+```
+2. Health checks OK:
+```
+curl http://localhost:8000/health -> {"status":"UP"}
+curl http://localhost:8001/health -> {"status":"UP"}
+```
+3. Diferencia de bases (tabla dummy sólo en QA):
+```
+docker compose exec db_qa psql -U app -d app -c "CREATE TABLE IF NOT EXISTS test_dummy(id int primary key); INSERT INTO test_dummy VALUES (1) ON CONFLICT DO NOTHING; SELECT * FROM test_dummy;"
+ id
+----
+	1
+(1 row)
+
+docker compose exec db psql -U app -d app -c "SELECT * FROM test_dummy;" -> (0 rows)
+```
+4. Persistencia entre reinicios:
+```
+docker compose down
+docker compose up -d
+docker compose exec db_qa psql -U app -d app -c "SELECT * FROM test_dummy;"  # sigue presente
+```
+5. Publicación de imágenes (extracto):
+```
+docker push nallarmariano/is3-backend:v1.0
+docker push nallarmariano/is3-frontend:v1.0
+docker push nallarmariano/is3-frontend:qa
+```
+
+## Problemas y soluciones
+| Problema | Causa | Solución |
+|----------|-------|----------|
+| Frontend QA apuntaba a backend PROD | Variable `NEXT_PUBLIC_API_URL` bakeada igual en la imagen | Crear imagen separada QA con build-arg distinto (`is3-frontend:qa`) |
+| Warning `version` obsoleto en compose | Compose v2 ignora `version:` | Remover clave `version:` del `docker-compose.yaml` |
+| Port binding conflicts (3000/8000/5432) | Contenedores previos activos | `docker compose down` y recrear, o usar puertos QA distintos (3001/8001/5433) |
+| 404 al crear release vía API GitHub | Token inválido/truncado | Regenerar PAT con scopes correctos y usar UI para release |
+| Confusión sobre DB compartida | Frontend llamaba a backend equivocado | Verificación env + rebuild imagen QA |
+| Variables `NEXT_PUBLIC_` no cambiaban en runtime | Next.js embebe en build | Rebuild con build args o futura runtime-config |
+
+## Próximos pasos sugeridos
+- Unificar imágenes frontend (runtime config dinámico para endpoint API).
+- Pipeline GitHub Actions para build/push automático en tags semánticos.
+- Añadir banner visual QA/PROD usando `NEXT_PUBLIC_ENV`.
+- Externalizar credenciales sensibles a un secret manager.
+
+---
+Documento elaborado para justificar decisiones de arquitectura, containerización y operaciones de despliegue multi-entorno (QA/PROD).
+
 
