@@ -1,11 +1,10 @@
-# Azure DevOps Pipeline CI para aplicación IS3
-# Frontend: Next.js + Backend: Go
-# CI Pipeline con Self-Hosted Agent según TP04 requirements
+# Azure DevOps Pipeline CI – IS3
+# Frontend: Next.js 14.2.3  | Backend: Go 1.22
+# Pool: Self-hosted (TP4_IS3)
 
 trigger:
   branches:
-    include:
-      - main
+    include: [ main ]
   paths:
     exclude:
       - README.md
@@ -14,178 +13,186 @@ trigger:
 
 pr:
   branches:
-    include:
-      - main
+    include: [ main ]
   paths:
     exclude:
       - README.md
       - decisiones.md
       - '*.md'
 
-# Variables globales
 variables:
-  # Pool del self-hosted agent
   agentPool: 'TP4_IS3'
-  
-  # Versioning
+  # versiones exactas
+  nodeVersion: '20.12.0'
+  goVersion: '1.22.6'
+  # rutas
+  frontendPath: 'ucc-arq-soft-front'
+  backendPath: 'ucc-soft-arch-golang'
+  # versionado simple
   majorVersion: 1
   minorVersion: 0
   patchVersion: $[counter(variables['Build.SourceBranchName'], 0)]
   buildVersion: '$(majorVersion).$(minorVersion).$(patchVersion)'
-  
-  # Paths del proyecto
-  frontendPath: 'ucc-arq-soft-front'
-  backendPath: 'ucc-soft-arch-golang'
 
 stages:
-  # ============================================
-  # STAGE CI: BUILD, TEST Y PUBLISH ARTIFACTS
-  # ============================================
-  - stage: CI
-    displayName: 'Continuous Integration'
-    jobs:
-      # ==========================================
-      # JOB 1: Build Frontend (Next.js)
-      # ==========================================
-      - job: BuildFrontend
-        displayName: 'Build Frontend (Next.js)'
-        pool:
-          name: $(agentPool)
-        
-        steps:
-          - checkout: self
-            clean: true
-            displayName: 'Checkout Source Code'
+- stage: CI
+  displayName: 'Continuous Integration'
+  jobs:
 
-          - task: NodeTool@0
-            displayName: 'Use Node.js 18.x'
-            inputs:
-              versionSpec: '18.x'
-              checkLatest: true
+  # =========================
+  # FRONTEND (Next.js / Node)
+  # =========================
+  - job: BuildFrontend
+    displayName: 'Build Frontend (Next.js)'
+    pool: { name: $(agentPool) }
+    steps:
+    - checkout: self
+      clean: true
+      displayName: 'Checkout Source Code'
 
-          - script: |
-              cd $(frontendPath)
-              echo "Installing frontend dependencies..."
-              npm ci --silent --prefer-offline
-            displayName: 'Install Frontend Dependencies'
-            
-          - script: |
-              cd $(frontendPath)
-              echo "Running frontend linting..."
-              npm run lint
-            displayName: 'Run Frontend Linting'
-            continueOnError: true
+    # Node exacto (acepta 20.12.0)
+    - task: NodeTool@0
+      displayName: 'Use Node.js $(nodeVersion)'
+      inputs:
+        versionSpec: '$(nodeVersion)'
+        checkLatest: false
 
-          - script: |
-              cd $(frontendPath)
-              echo "Building frontend application..."
-              npm run build
-            displayName: 'Build Frontend Application'
-            env:
-              NEXT_PUBLIC_API_URL: 'http://localhost:8000'
+    # Cache npm para acelerar
+    - task: Cache@2
+      displayName: 'Cache npm (front)'
+      inputs:
+        key: 'npm | "$(Agent.OS)" | $(frontendPath)/package-lock.json'
+        restoreKeys: 'npm | "$(Agent.OS)"'
+        path: '$(frontendPath)/node_modules'
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Frontend Build (.next)'
-            inputs:
-              PathtoPublish: '$(frontendPath)/.next'
-              ArtifactName: 'frontend-dist'
-              publishLocation: 'Container'
+    - script: |
+        cd $(frontendPath)
+        echo Installing frontend dependencies...
+        if exist package-lock.json ( npm ci ) else ( npm i )
+      displayName: 'Install Frontend Dependencies'
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Frontend Dependencies'
-            inputs:
-              PathtoPublish: '$(frontendPath)/package.json'
-              ArtifactName: 'frontend-config'
-              publishLocation: 'Container'
+    - script: |
+        cd $(frontendPath)
+        echo Lint...
+        npm run lint
+      displayName: 'Run Frontend Linting'
+      continueOnError: true
 
-      # ==========================================
-      # JOB 2: Build Backend (Go)
-      # ==========================================
-      - job: BuildBackend
-        displayName: 'Build Backend (Go)'
-        pool:
-          name: $(agentPool)
-        
-        steps:
-          - checkout: self
-            clean: true
-            displayName: 'Checkout Source Code'
+    - script: |
+        cd $(frontendPath)
+        echo Building Next.js...
+        npm run build
+      displayName: 'Build Frontend Application'
+      env:
+        NEXT_PUBLIC_API_URL: 'http://localhost:8000'
+        NEXT_TELEMETRY_DISABLED: '1'
 
-          - task: GoTool@0
-            displayName: 'Use Go 1.22.x'
-            inputs:
-              version: '1.22.x'
+    # Publicar artefactos: carpeta .next (ajustá si usás 'output: standalone')
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Frontend Build (.next)'
+      inputs:
+        PathtoPublish: '$(frontendPath)/.next'
+        ArtifactName: 'frontend-dist'
+        publishLocation: 'Container'
 
-          - script: |
-              cd $(backendPath)
-              echo "Go version: $(go version)"
-              echo "Downloading dependencies..."
-              go mod download
-              go mod verify
-            displayName: 'Download Backend Dependencies'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Frontend package.json'
+      inputs:
+        PathtoPublish: '$(frontendPath)/package.json'
+        ArtifactName: 'frontend-config'
+        publishLocation: 'Container'
 
-          - script: |
-              cd $(backendPath)
-              echo "Running static analysis..."
-              go vet ./...
-            displayName: 'Run Go Vet (Static Analysis)'
-            continueOnError: true
+  # =================
+  # BACKEND (Go 1.22)
+  # =================
+  - job: BuildBackend
+    displayName: 'Build Backend (Go)'
+    pool: { name: $(agentPool) }
+    dependsOn: BuildFrontend
+    steps:
+    - checkout: self
+      clean: true
+      displayName: 'Checkout Source Code'
 
-          - script: |
-              cd $(backendPath)
-              echo "Checking code formatting..."
-              go fmt ./...
-            displayName: 'Check Go Formatting'
-            continueOnError: true
+    # Go exacto (no usar comodín 1.22.x)
+    - task: GoTool@0
+      displayName: 'Use Go $(goVersion)'
+      inputs:
+        version: '$(goVersion)'
 
-          - script: |
-              cd $(backendPath)
-              echo "Building backend binary..."
-              mkdir -p bin
-              CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./bin/app ./main.go
-              echo "Build completed. Binary size:"
-              ls -lh ./bin/app
-            displayName: 'Build Backend Binary'
+    # Cache de módulos
+    - task: Cache@2
+      displayName: 'Cache Go modules'
+      inputs:
+        key: 'gomod | "$(Agent.OS)" | $(backendPath)/go.sum'
+        restoreKeys: 'gomod | "$(Agent.OS)"'
+        path: '$(GOPATH)/pkg/mod'
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Backend Binary'
-            inputs:
-              PathtoPublish: '$(backendPath)/bin'
-              ArtifactName: 'backend-bin'
-              publishLocation: 'Container'
+    - script: |
+        cd $(backendPath)
+        go version
+        echo Descargar dependencias...
+        go mod download
+        go mod verify
+      displayName: 'Download Backend Dependencies'
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Backend Dependencies'
-            inputs:
-              PathtoPublish: '$(backendPath)/go.mod'
-              ArtifactName: 'backend-config'
-              publishLocation: 'Container'
+    - script: |
+        cd $(backendPath)
+        echo Analisis estático (go vet)...
+        go vet ./...
+      displayName: 'Run Go Vet (Static Analysis)'
+      continueOnError: true
 
-      # ==========================================
-      # JOB 3: Publish Summary (Informativo)
-      # ==========================================  
-      - job: PublishSummary
-        displayName: 'Build Summary'
-        dependsOn: 
-          - BuildFrontend
-          - BuildBackend
-        pool:
-          name: $(agentPool)
-        
-        steps:
-          - script: |
-              echo "======================================"
-              echo "    CI BUILD COMPLETED SUCCESSFULLY   "
-              echo "======================================"
-              echo "Build Version: $(buildVersion)"
-              echo "Frontend: Next.js build completed"
-              echo "Backend: Go binary compiled"
-              echo "Artifacts published to Azure DevOps"
-              echo ""
-              echo "Published Artifacts:"
-              echo "- frontend-dist (Next.js .next folder)"
-              echo "- frontend-config (package.json)"
-              echo "- backend-bin (Go binary)"
-              echo "- backend-config (go.mod)"
-              echo "======================================"
-            displayName: 'Display Build Summary'
+    - script: |
+        cd $(backendPath)
+        echo Formato (go fmt)...
+        go fmt ./...
+      displayName: 'Check Go Formatting'
+      continueOnError: true
+
+    # Build nativo en Windows → genera bin\app.exe
+    - script: |
+        cd $(backendPath)
+        if not exist bin mkdir bin
+        echo Compilando backend...
+        go build -ldflags="-w -s" -o .\bin\app.exe .\main.go
+        dir .\bin
+      displayName: 'Build Backend Binary (Windows)'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Backend Binary'
+      inputs:
+        PathtoPublish: '$(backendPath)/bin'
+        ArtifactName: 'backend-bin'
+        publishLocation: 'Container'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Backend go.mod'
+      inputs:
+        PathtoPublish: '$(backendPath)/go.mod'
+        ArtifactName: 'backend-config'
+        publishLocation: 'Container'
+
+  # ============================
+  # Resumen "cosmético" (opcional)
+  # ============================
+  - job: PublishSummary
+    displayName: 'Build Summary'
+    pool: { name: $(agentPool) }
+    dependsOn:
+      - BuildFrontend
+      - BuildBackend
+    steps:
+    - script: |
+        echo ======================================
+        echo    CI BUILD COMPLETED SUCCESSFULLY
+        echo ======================================
+        echo Build Version: $(buildVersion)
+        echo Frontend: Next.js build completed
+        echo Backend: Go binary compiled
+        echo Artifacts:
+        echo  - frontend-dist (.next)
+        echo  - frontend-config (package.json)
+        echo  - backend-bin (app.exe)
+        echo  - backend-config (go.mod)
+      displayName: 'Display Build Summary'
