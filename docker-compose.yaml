@@ -85,7 +85,8 @@ services:
       - appnet
 
   frontend_qa:
-    image: is3-frontend:v1.0
+    # Imagen QA separada con NEXT_PUBLIC_API_URL bakeado a backend QA (8001)
+    image: is3-frontend:qa
     ports:
       - "3001:3000"
     environment:
