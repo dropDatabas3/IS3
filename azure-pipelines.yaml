@@ -1,6 +1,6 @@
 # Azure DevOps Pipeline CI – IS3
-# Frontend: Next.js 14.2.3  | Backend: Go 1.22
-# Pool: Self-hosted (TP4_IS3)
+# Frontend: Next.js 14.2.3  | Backend: Go 1.22.6
+# Pool: Self-hosted (TP4_IS3) — SIN Cache@2
 
 trigger:
   branches:
@@ -22,13 +22,10 @@ pr:
 
 variables:
   agentPool: 'TP4_IS3'
-  # versiones exactas
-  nodeVersion: '20.12.0'
-  goVersion: '1.22.6'
-  # rutas
+  nodeVersion: '20.12.0'      # compatible con Next 14.2.3
+  goVersion: '1.22.6'         # cumple con go 1.22 de tu go.mod
   frontendPath: 'ucc-arq-soft-front'
   backendPath: 'ucc-soft-arch-golang'
-  # versionado simple
   majorVersion: 1
   minorVersion: 0
   patchVersion: $[counter(variables['Build.SourceBranchName'], 0)]
@@ -50,44 +47,32 @@ stages:
       clean: true
       displayName: 'Checkout Source Code'
 
-    # Node exacto (acepta 20.12.0)
     - task: NodeTool@0
       displayName: 'Use Node.js $(nodeVersion)'
       inputs:
         versionSpec: '$(nodeVersion)'
         checkLatest: false
 
-    # Cache npm para acelerar
-    - task: Cache@2
-      displayName: 'Cache npm (front)'
-      inputs:
-        key: 'npm | "$(Agent.OS)" | $(frontendPath)/package-lock.json'
-        restoreKeys: 'npm | "$(Agent.OS)"'
-        path: '$(frontendPath)/node_modules'
-
     - script: |
         cd $(frontendPath)
         echo Installing frontend dependencies...
-        if exist package-lock.json ( npm ci ) else ( npm i )
+        if exist package-lock.json ( npm ci --prefer-offline --no-audit --no-fund ) else ( npm i --no-audit --no-fund )
       displayName: 'Install Frontend Dependencies'
 
     - script: |
         cd $(frontendPath)
-        echo Lint...
         npm run lint
       displayName: 'Run Frontend Linting'
       continueOnError: true
 
     - script: |
         cd $(frontendPath)
-        echo Building Next.js...
         npm run build
       displayName: 'Build Frontend Application'
       env:
         NEXT_PUBLIC_API_URL: 'http://localhost:8000'
         NEXT_TELEMETRY_DISABLED: '1'
 
-    # Publicar artefactos: carpeta .next (ajustá si usás 'output: standalone')
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Frontend Build (.next)'
       inputs:
@@ -114,19 +99,10 @@ stages:
       clean: true
       displayName: 'Checkout Source Code'
 
-    # Go exacto (no usar comodín 1.22.x)
     - task: GoTool@0
       displayName: 'Use Go $(goVersion)'
       inputs:
         version: '$(goVersion)'
-
-    # Cache de módulos
-    - task: Cache@2
-      displayName: 'Cache Go modules'
-      inputs:
-        key: 'gomod | "$(Agent.OS)" | $(backendPath)/go.sum'
-        restoreKeys: 'gomod | "$(Agent.OS)"'
-        path: '$(GOPATH)/pkg/mod'
 
     - script: |
         cd $(backendPath)
@@ -174,7 +150,7 @@ stages:
         publishLocation: 'Container'
 
   # ============================
-  # Resumen "cosmético" (opcional)
+  # Resumen (opcional)
   # ============================
   - job: PublishSummary
     displayName: 'Build Summary'

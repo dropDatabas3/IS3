@@ -16,7 +16,7 @@ pr:
       - main
 
 variables:
-  agentPool: 'SelfHosted'  # Cambia por el nombre de tu pool
+  agentPool: 'TP4_IS3'  # Cambia por el nombre de tu pool
   buildVersion: '1.0.$(Build.BuildNumber)'
   frontendPath: 'ucc-arq-soft-front'
   backendPath: 'ucc-soft-arch-golang'
