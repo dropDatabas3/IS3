@@ -205,7 +205,7 @@ Corremos PROD y QA al mismo tiempo sin que se pisen:
 - Frontend QA: puerto 3001 → habla con backend 8001.
 - Bases: 5432 (prod) y 5433 (qa).
 
-Usamos variables de entorno para cambiar: URL del backend, credenciales DB, nombres de base, modo debug, etc. En el frontend QA hicimos una imagen aparte porque en Next.js algunas variables públicas se “hornean” en el build y no cambian sólo con reiniciar.
+Usamos variables de entorno para cambiar: URL del backend, credenciales DB, nombres de base, modo debug, etc. Inicialmente el frontend QA era una imagen aparte porque Next.js “hornea” variables públicas en el build. Luego lo mejoramos: ahora usamos una sola imagen y una configuración en runtime (archivo `public/runtime-config.js` generado al arrancar el contenedor) para que cada entorno apunte a su backend correcto sin rebuild.
 
 Ejemplos simples (concepto):
 ```
@@ -242,7 +242,7 @@ CONTAINER        IMAGE                               PORTS
 frontend         nallarmariano/is3-frontend:v1.0      0.0.0.0:3000->3000
 backend          nallarmariano/is3-backend:v1.0       0.0.0.0:8000->8000
 db               postgres:15-alpine                  0.0.0.0:5432->5432
-frontend_qa      nallarmariano/is3-frontend:qa        0.0.0.0:3001->3000
+frontend_qa      nallarmariano/is3-frontend:v1.0      0.0.0.0:3001->3000
 backend_qa       nallarmariano/is3-backend:v1.0       0.0.0.0:8001->8000
 db_qa            postgres:15-alpine                  0.0.0.0:5433->5432
 ```
@@ -284,7 +284,7 @@ Si se quiere reemplazar estos textos por capturas, podemos ponerlas en una carpe
 | Choque de puertos al levantar todo | Servicios se pisaban | Asignamos puertos distintos para QA (3001, 8001, 5433) |
 | Error 404 creando release vía API | Token incorrecto | Usamos interfaz web y ajustamos token |
 | Duda sobre si las bases eran distintas | Parecían iguales | Revisamos variables y probamos insert selectivo |
-| No se actualizaba URL frontend sin rebuild | Next.js “fija” algunas vars | Aceptamos segunda imagen QA y lo documentamos |
+| No se actualizaba URL frontend sin rebuild | Next.js “fija” algunas vars | Implementamos runtime-config (una sola imagen front para QA/PROD) |
 
 ---
 ## 10. Resumen final
