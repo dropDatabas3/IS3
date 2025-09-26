@@ -39,10 +39,11 @@ services:
       - "8001:8000"
 
   frontend:
-    image: is3-frontend:${QA_FRONTEND_TAG:-qa}
+    image: is3-frontend:${QA_FRONTEND_TAG:-prod}
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=${QA_NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      - NODE_ENV=production
+      - RUNTIME_PUBLIC_API_URL=${QA_RUNTIME_PUBLIC_API_URL:-http://localhost:8001}
+      - NEXT_PUBLIC_API_URL=${QA_NEXT_PUBLIC_API_URL:-http://localhost:8001}
       - INTERNAL_API=${QA_INTERNAL_API:-http://backend:8000}
     depends_on:
       - backend

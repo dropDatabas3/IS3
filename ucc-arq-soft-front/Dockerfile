@@ -21,4 +21,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
+# Runtime config entrypoint: generate public/runtime-config.js from env
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+ENTRYPOINT ["sh", "/app/docker-entrypoint.sh"]
 CMD ["npm", "start"]
