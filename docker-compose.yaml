@@ -20,7 +20,7 @@ services:
       - appnet
 
   backend:
-    image: is3-backend:v1.0
+    image: nallarmariano/is3-backend:v1.0
     ports:
       - "8000:8000"
     environment:
@@ -38,7 +38,7 @@ services:
       - appnet
 
   frontend:
-    image: is3-frontend:v1.0
+    image: nallarmariano/is3-frontend:v1.0
     ports:
       - "3000:3000"
     environment:
@@ -67,7 +67,7 @@ services:
       - appnet
 
   backend_qa:
-    image: is3-backend:v1.0
+    image: nallarmariano/is3-backend:v1.0
     ports:
       - "8001:8000"
     environment:
@@ -85,8 +85,8 @@ services:
       - appnet
 
   frontend_qa:
-    # Imagen QA separada con NEXT_PUBLIC_API_URL bakeado a backend QA (8001)
-    image: is3-frontend:qa
+    # Imagen QA separada (tag qa) bakeada con NEXT_PUBLIC_API_URL=http://localhost:8001
+    image: nallarmariano/is3-frontend:qa
     ports:
       - "3001:3000"
     environment:
