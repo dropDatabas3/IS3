@@ -1,4 +1,163 @@
-docker compose -f docker-compose.prod.yml up -d --build
+# Decisiones de Diseño - Pipeline CI Azure DevOps
+
+## 📋 Información del Proyecto
+
+**Aplicación**: Sistema de cursos IS3  
+**Stack Tecnológico**: 
+- **Frontend**: Next.js 14 (React, TypeScript, Tailwind CSS)
+- **Backend**: Go 1.22 (Gin, GORM, PostgreSQL)
+- **Estructura**: Mono-repo con carpetas `/ucc-arq-soft-front` y `/ucc-soft-arch-golang`
+
+## 🎯 Decisiones de Pipeline CI
+
+### 1. **¿Por qué YAML y no Classic Pipeline?**
+- **Versionado**: El pipeline está versionado junto con el código fuente
+- **Code Review**: Los cambios al pipeline pasan por PR review
+- **Portabilidad**: Fácil migración entre proyectos y organizaciones
+- **Reutilización**: Posibilidad de usar templates y librerías
+- **Transparencia**: Todo el equipo puede ver y entender la configuración
+
+### 2. **¿Por qué Self-Hosted Agent vs Microsoft-Hosted?**
+#### Ventajas del Self-Hosted:
+- **Control total** del entorno (versiones específicas de Node.js, Go)
+- **Dependencias persistentes** (node_modules cache, Go module cache)
+- **Sin límites de tiempo** de ejecución (Microsoft-Hosted tiene límite de 60min)
+- **Recursos locales** (acceso a bases de datos internas, servicios locales)
+- **Costo** (para builds largos o frecuentes)
+- **Personalización** (herramientas específicas, configuraciones custom)
+
+#### Para este proyecto específicamente:
+- Build de Next.js puede ser lento (beneficia del cache persistente)
+- Go compilation es rápida pero beneficia de module cache
+- Control de versiones exactas (Go 1.22, Node 18)
+
+### 3. **Estructura del Pipeline (Multi-Job en Single Stage)**
+
+#### Stage único "CI" con 3 Jobs:
+1. **BuildFrontend**: 
+   - Install dependencies (npm ci)
+   - Linting (npm run lint)
+   - Build (npm run build)
+   - Publish artifacts (.next + package.json)
+
+2. **BuildBackend**:
+   - Download Go modules
+   - Static analysis (go vet)
+   - Format check (go fmt)
+   - Compile binary (optimized build)
+   - Publish artifacts (binary + go.mod)
+
+3. **PublishSummary**:
+   - Consolidate build information
+   - Display summary of published artifacts
+
+#### ¿Por qué Jobs paralelos y no secuenciales?
+- **Performance**: Frontend y backend builds son independientes
+- **Eficiencia**: Aprovecha múltiples cores del self-hosted agent
+- **Fail Fast**: Si uno falla, el otro continúa para dar feedback completo
+
+### 4. **Triggers y PR Strategy**
+
+```yaml
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - '*.md'
+
+pr:
+  branches:
+    include:
+      - main
+```
+
+#### Decisiones:
+- **Solo main**: Siguiendo la guía del TP (trigger en main)
+- **PR Validation**: Valida cambios antes del merge
+- **Path Exclusion**: No ejecuta en cambios de documentación
+- **Branch Strategy**: Preparado para GitFlow (main + develop)
+
+### 5. **Quality Gates Implementados**
+
+#### Frontend:
+- **Linting**: `npm run lint` (ESLint + Next.js rules)
+- **Type Checking**: Implícito en `npm run build` (TypeScript)
+- **Build Validation**: Asegura que la app compile correctamente
+
+#### Backend:
+- **Static Analysis**: `go vet ./...` (detección de bugs potenciales)
+- **Format Check**: `go fmt ./...` (consistencia de código)
+- **Dependency Validation**: `go mod verify` (integridad de dependencias)
+
+#### ¿Por qué `continueOnError: true` en algunos steps?
+- **Linting y formatting** son **informativos** pero no bloquean el build
+- Permite ver **todos los issues** de una vez
+- El **build real** sí debe fallar si hay errores críticos
+
+### 6. **Artifact Strategy**
+
+#### Artifacts Publicados:
+- `frontend-dist`: Carpeta `.next` (build output de Next.js)
+- `frontend-config`: `package.json` (metadata y dependencies)
+- `backend-bin`: Binary compilado de Go (listo para deploy)
+- `backend-config`: `go.mod` (metadata de dependencias)
+
+#### ¿Por qué estos artifacts?
+- **Completos**: Todo lo necesario para deployment posterior
+- **Optimizados**: Solo lo esencial (no node_modules completos)
+- **Metadata**: Información para debugging y dependency tracking
+
+### 7. **Optimizaciones Implementadas**
+
+#### Build Optimization:
+```bash
+# Go build optimizado
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./bin/app
+```
+- `CGO_ENABLED=0`: Binary estático (sin dependencias C)
+- `GOOS=linux`: Target para contenedores/servers
+- `-ldflags="-w -s"`: Remove debug info (binary más pequeño)
+
+#### Dependency Optimization:
+```bash
+# npm más eficiente
+npm ci --silent --prefer-offline
+```
+- `--prefer-offline`: Usa cache local primero
+- `--silent`: Menos verbose output
+
+### 8. **Versionado Automático**
+
+```yaml
+patchVersion: $[counter(variables['Build.SourceBranchName'], 0)]
+buildVersion: '$(majorVersion).$(minorVersion).$(patchVersion)'
+```
+
+- **Semantic Versioning**: 1.0.X format
+- **Auto-increment**: Patch version se incrementa automáticamente
+- **Branch-based**: Counter independiente por branch
+
+## 🚀 Extensiones Futuras (No implementadas - Solo CI)
+
+Para CD (Continuous Deployment) se podrían agregar:
+- Docker image builds
+- Container registry push  
+- Environment deployments (dev/qa/prod)
+- Integration tests con docker-compose
+- Automated rollback capabilities
+
+## 📊 Métricas y Beneficios Esperados
+
+- **Build Time**: ~3-5 minutos (vs ~8-10 en Microsoft-hosted)
+- **Cache Hit Rate**: >80% después de primer build
+- **Artifact Size**: <50MB total
+- **Parallel Efficiency**: 2x speedup vs sequential builds
+
+## 🔧 Configuración Requerida del Agent
+
+Ver archivos: `agent-prerequisites.md` y `guia-selfhosted-agent.md`er compose -f docker-compose.prod.yml up -d --build
 ﻿# Decisiones del Proyecto (versión explicada “con nuestras palabras”)
 
 Este archivo resume qué elegimos, por qué y cómo comprobamos que funciona, sin meternos de más en lo técnico.

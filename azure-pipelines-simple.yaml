@@ -1,0 +1,98 @@
+# Azure DevOps Pipeline - Versión Simplificada pero Robusta
+# Frontend: Next.js + Backend: Go
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - '*.md'
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  agentPool: 'SelfHosted'  # Cambia por el nombre de tu pool
+  buildVersion: '1.0.$(Build.BuildNumber)'
+  frontendPath: 'ucc-arq-soft-front'
+  backendPath: 'ucc-soft-arch-golang'
+
+stages:
+  # ============================================
+  # STAGE 1: BUILD & QUALITY CHECKS
+  # ============================================
+  - stage: Build
+    displayName: 'Build Applications'
+    jobs:
+      - job: BuildFrontend
+        displayName: 'Build Frontend (Next.js)'
+        pool:
+          name: $(agentPool)
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '18.x'
+
+          - script: |
+              cd $(frontendPath)
+              npm ci --silent
+              npm run lint
+              npm run build
+            displayName: 'Frontend: Install, Lint & Build'
+            env:
+              NEXT_PUBLIC_API_URL: 'http://localhost:8000'
+
+          - publish: '$(frontendPath)/.next'
+            artifact: 'frontend-build'
+
+      - job: BuildBackend
+        displayName: 'Build Backend (Go)'
+        pool:
+          name: $(agentPool)
+        steps:
+          - task: GoTool@0
+            inputs:
+              version: '1.22.x'
+
+          - script: |
+              cd $(backendPath)
+              go mod download
+              go vet ./...
+              CGO_ENABLED=0 go build -ldflags="-w -s" -o ./bin/app ./main.go
+            displayName: 'Backend: Download, Vet & Build'
+
+          - publish: '$(backendPath)/bin'
+            artifact: 'backend-build'
+
+  # ============================================
+  # STAGE 2: DOCKER BUILD (Solo en main)
+  # ============================================
+  - stage: DockerBuild
+    displayName: 'Docker Build'
+    dependsOn: Build
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    jobs:
+      - job: BuildImages
+        displayName: 'Build Docker Images'
+        pool:
+          name: $(agentPool)
+        steps:
+          - script: |
+              # Build Backend
+              cd $(backendPath)
+              docker build -t is3-backend:$(buildVersion) .
+              
+              # Build Frontend
+              cd ../$(frontendPath)
+              docker build -t is3-frontend:$(buildVersion) .
+              
+              echo "Images built successfully!"
+            displayName: 'Build Docker Images'
+
+          - script: |
+              docker images | grep is3
+            displayName: 'List Built Images'
