@@ -21,7 +21,7 @@ services:
       - appnet
 
   backend:
-    image: is3-backend:${QA_BACKEND_TAG:-qa}
+    image: ${DOCKER_USER:-nallarmariano}/is3-backend:${QA_BACKEND_TAG:-v1.0}
     environment:
       - ENV=qa
       - PORT=8000
@@ -39,7 +39,7 @@ services:
       - "8001:8000"
 
   frontend:
-    image: is3-frontend:${QA_FRONTEND_TAG:-prod}
+    image: ${DOCKER_USER:-nallarmariano}/is3-frontend:${QA_FRONTEND_TAG:-v1.0}
     environment:
       - NODE_ENV=production
       - RUNTIME_PUBLIC_API_URL=${QA_RUNTIME_PUBLIC_API_URL:-http://localhost:8001}

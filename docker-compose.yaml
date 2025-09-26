@@ -20,7 +20,7 @@ services:
       - appnet
 
   backend:
-    image: nallarmariano/is3-backend:v1.0
+    image: ${DOCKER_USER:-nallarmariano}/is3-backend:${BACKEND_TAG:-v1.0}
     ports:
       - "8000:8000"
     environment:
@@ -38,7 +38,7 @@ services:
       - appnet
 
   frontend:
-    image: nallarmariano/is3-frontend:v1.0
+    image: ${DOCKER_USER:-nallarmariano}/is3-frontend:${FRONTEND_TAG:-v1.0}
     ports:
       - "3000:3000"
     environment:
@@ -68,7 +68,7 @@ services:
       - appnet
 
   backend_qa:
-    image: nallarmariano/is3-backend:v1.0
+    image: ${DOCKER_USER:-nallarmariano}/is3-backend:${QA_BACKEND_TAG:-v1.0}
     ports:
       - "8001:8000"
     environment:
@@ -87,7 +87,7 @@ services:
 
   frontend_qa:
     # Usa la misma imagen que prod, pero cambia la URL pública en runtime
-    image: nallarmariano/is3-frontend:v1.0
+    image: ${DOCKER_USER:-nallarmariano}/is3-frontend:${QA_FRONTEND_TAG:-v1.0}
     ports:
       - "3001:3000"
     environment:
