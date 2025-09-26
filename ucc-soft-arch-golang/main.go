@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	// CI Test: Configuración inicial de la aplicación
 	// Cargar variables de entorno
 	envs := config.LoadEnvs(".env")
 	db := config.NewConnection((envs.Get("DATABASE_URL")))

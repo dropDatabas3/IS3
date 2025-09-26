@@ -1,5 +1,7 @@
 # IS3 - Plataforma Cursos (Backend Go + Frontend Next.js + Postgres)
 
+[![Build Status](https://dev.azure.com/your-org/IS3/_apis/build/status%2FIS3-CI?branchName=main)](https://dev.azure.com/your-org/IS3/_build/latest?definitionId=XX&branchName=main)
+
 ## Contenido del repositorio
 - **Dockerfile Backend**: `ucc-soft-arch-golang/Dockerfile`
 - **Dockerfile Frontend**: `ucc-arq-soft-front/Dockerfile`
