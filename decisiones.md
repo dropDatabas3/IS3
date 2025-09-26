@@ -1,6 +1,6 @@
 # Decisiones del Proyecto
 
-Este documento resume qué hicimos, por qué lo hicimos y cómo comprobamos que funciona, siguiendo los puntos que pide el trabajo práctico. Evitamos jerga innecesaria y lo contamos "con nuestras palabras".
+Este documento resume qué hicimos, por qué lo hicimos y cómo comprobamos que funciona, siguiendo los puntos que pide el trabajo práctico.
 
 ---
 ## 1) Elegimos y preparamos la aplicación
@@ -8,7 +8,7 @@ Este documento resume qué hicimos, por qué lo hicimos y cómo comprobamos que 
 - Repositorio: subimos todo a GitHub en un mono‑repo con dos carpetas claras: `ucc-arq-soft-front` (frontend) y `ucc-soft-arch-golang` (backend).
 - Entorno Docker: instalamos Docker Desktop y configuramos Compose para poder levantar frontend, backend y base de datos con un solo comando. Dejamos por escrito las decisiones para que cualquiera del equipo pueda reproducirlo.
 
-¿Por qué esta app? Porque ya la conocíamos, tenía frontend, backend y base de datos, y nos servía para practicar lo que pide el TP (contenedores, imágenes, QA/PROD, volúmenes, etc.).
+¿Por qué esta app? Porque ya la conocíamos, tenía frontend, backend, y nos servía para practicar lo que pide el TP (contenedores, imágenes, QA/PROD, volúmenes, etc.).
 
 ---
 ## 2) Construimos imágenes personalizadas
@@ -17,7 +17,7 @@ Este documento resume qué hicimos, por qué lo hicimos y cómo comprobamos que 
 - Imagen base: elegimos imágenes oficiales (Go y Node 18 en Alpine) por estabilidad y tamaño reducido.
 - Etiquetado: usamos tags claros (por ejemplo, `v1.0`). La idea es que cada versión tenga su etiqueta para saber exactamente qué estamos corriendo.
 
-Notas de estructura (simple): menos capas, menos peso, arranque rápido y sin herramientas de desarrollo en la imagen final.
+Notas de estructura: menos capas, menos peso, arranque rápido y sin herramientas de desarrollo en la imagen final.
 
 ---
 ## 3) Publicamos en Docker Hub (versionado)
@@ -74,8 +74,4 @@ Esto permite que el entorno se ejecute igual en cualquier máquina que tenga Doc
 ## Problemas comunes y cómo los resolvimos
 - El frontend QA mostraba datos de PROD: antes de la mejora, Next.js “horneaba” la URL. Lo solucionamos generando la configuración en runtime y usando una sola imagen.
 - Acceso a la DB desde el host: no funciona con el nombre del servicio (`db_qa`) desde afuera; se accede con `localhost:5433` (QA) o `localhost:5432` (PROD).
-- Confusión con los tags: usamos `v1.0` como referencia estable y no lo pisamos. Para cambios, creamos `v1.1`, etc.
 
----
-## Notas finales
-El objetivo fue dejar algo simple, claro y que se pueda explicar en la defensa: una app conocida, imágenes pequeñas, QA y PROD corriendo al mismo tiempo con la misma imagen, datos persistentes y versiones controladas.
