@@ -1,0 +1,222 @@
+# Azure DevOps Multi-stage Release Pipeline (Build once → Deploy Testing → Approve → Deploy Prod)
+# Frontend: Next.js | Backend: Go | Images pushed to ACR and reused across stages
+
+trigger:
+  branches:
+    include: [ main ]
+  paths:
+    exclude:
+      - README.md
+      - decisiones.md
+      - '*.md'
+
+pr:
+  branches:
+    include: [ main ]
+
+variables:
+  # Agent pool
+  agentPool: 'TP4_IS3'              # Pool self-hosted indicado por el equipo
+
+  # Container Registry (configura un Service Connection de tipo Docker Registry apuntando a tu ACR)
+  dockerRegistryServiceConnection: 'is3acr-service-connection'  # NOMBRE del service connection (Docker Registry) a tu ACR
+  acrLoginServer: 'is3acr.azurecr.io'                            # <nombreACR>.azurecr.io
+
+  # Azure Subscription connection (para desplegar a Web Apps)
+  azureSubscription: 'IS3-Azure-Subscription'  # NOMBRE del service connection (Azure Resource Manager)
+
+  # Repositorios e imagenes
+  backendImageName: 'is3-backend'
+  frontendImageName: 'is3-frontend'
+  imageTag: '$(Build.BuildId)'     # Inmutable; el mismo tag viaja a Testing y Prod
+
+  # Nombres de Web Apps (ajústalos a los creados en Azure)
+  backendAppQA:  'is3-backend-qa'
+  backendAppProd:'is3-backend-prod'
+  frontendAppQA: 'is3-frontend-qa'
+  frontendAppProd:'is3-frontend-prod'
+
+  # URLs públicas esperadas (ajusta si usas dominios personalizados)
+  backendUrlQA:  'https://is3-backend-qa.azurewebsites.net'
+  backendUrlProd:'https://is3-backend-prod.azurewebsites.net'
+  frontendUrlQA: 'https://is3-frontend-qa.azurewebsites.net'
+  frontendUrlProd:'https://is3-frontend-prod.azurewebsites.net'
+
+  # Conexiones a base (reemplaza con valores reales/variables secretas a nivel pipeline/library)
+  databaseUrlQA:   'postgres://app:CHANGE_ME@is3pgqa.postgres.database.azure.com:5432/app?sslmode=require'
+  databaseUrlProd: 'postgres://app:CHANGE_ME@is3pgprod.postgres.database.azure.com:5432/app?sslmode=require'
+
+stages:
+
+  # =========================
+  # BUILD & PUSH (Build Once)
+  # =========================
+  - stage: BuildAndPush
+    displayName: 'Build and Push Docker Images to ACR'
+    jobs:
+      - job: BuildPush
+        displayName: 'Build & Push frontend/backend'
+        pool: { name: $(agentPool) }
+        steps:
+          - checkout: self
+            clean: true
+
+          # Login to ACR via Docker service connection
+          - task: Docker@2
+            displayName: 'Login to ACR'
+            inputs:
+              command: 'login'
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+
+          # Build & push BACKEND
+          - task: Docker@2
+            displayName: 'Build & Push Backend'
+            inputs:
+              command: 'buildAndPush'
+              repository: '$(acrLoginServer)/$(backendImageName)'
+              Dockerfile: 'ucc-soft-arch-golang/Dockerfile'
+              buildContext: 'ucc-soft-arch-golang'
+              tags: |
+                $(imageTag)
+
+          # Build & push FRONTEND (runtime-config en start; sin variables de build obligatorias)
+          - task: Docker@2
+            displayName: 'Build & Push Frontend'
+            inputs:
+              command: 'buildAndPush'
+              repository: '$(acrLoginServer)/$(frontendImageName)'
+              Dockerfile: 'ucc-arq-soft-front/Dockerfile'
+              buildContext: 'ucc-arq-soft-front'
+              tags: |
+                $(imageTag)
+
+  # ======================
+  # DEPLOY TESTING (QA)
+  # ======================
+  - stage: Deploy_Testing
+    displayName: 'Deploy to Testing (QA)'
+    dependsOn: BuildAndPush
+    jobs:
+      - job: DeployBackendQA
+        displayName: 'Deploy Backend QA'
+        pool: { name: $(agentPool) }
+        environment: 'is3-qa'  # Configura approvals/checks en Azure DevOps Environments si lo deseas
+        steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Backend QA (container)'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(backendAppQA)'
+              appType: 'webAppLinux'
+              runtimeStack: ''
+              imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+              appSettings: >
+                -PORT 8000
+                -ENV qa
+                -DATABASE_URL $(databaseUrlQA)
+
+          - task: PowerShell@2
+            displayName: 'Health Check Backend QA (/health)'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $ErrorActionPreference = 'Stop'
+                Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
+                if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+      - job: DeployFrontendQA
+        displayName: 'Deploy Frontend QA'
+        pool: { name: $(agentPool) }
+        dependsOn: DeployBackendQA
+        environment: 'is3-qa'
+        steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Frontend QA (container)'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(frontendAppQA)'
+              appType: 'webAppLinux'
+              runtimeStack: ''
+              imageName: '$(acrLoginServer)/$(frontendImageName):$(imageTag)'
+              appSettings: >
+                -NODE_ENV production
+                -RUNTIME_PUBLIC_API_URL $(backendUrlQA)
+                -INTERNAL_API $(backendUrlQA)
+                -NEXT_PUBLIC_API_URL $(backendUrlQA)
+
+          - task: PowerShell@2
+            displayName: 'Health Check Frontend QA (/)'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $ErrorActionPreference = 'Stop'
+                Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                $resp = Invoke-WebRequest -Uri "$(frontendUrlQA)" -UseBasicParsing
+                if ($resp.StatusCode -ne 200) { throw "Frontend check FAILED: $($resp.StatusCode)" }
+
+  # ======================
+  # DEPLOY PROD (Approval)
+  # ======================
+  - stage: Deploy_Prod
+    displayName: 'Deploy to Production'
+    dependsOn: Deploy_Testing
+    condition: succeeded()  # Sólo si QA salió bien
+    jobs:
+      - job: DeployBackendProd
+        displayName: 'Deploy Backend Prod'
+        pool: { name: $(agentPool) }
+        environment: 'is3-prod'   # Agrega aprobación manual al Environment 'is3-prod' en Azure DevOps
+        steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Backend Prod (container)'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(backendAppProd)'
+              appType: 'webAppLinux'
+              runtimeStack: ''
+              imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+              appSettings: >
+                -PORT 8000
+                -ENV production
+                -DATABASE_URL $(databaseUrlProd)
+
+          - task: PowerShell@2
+            displayName: 'Health Check Backend PROD (/health)'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $ErrorActionPreference = 'Stop'
+                Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                $resp = Invoke-WebRequest -Uri "$(backendUrlProd)/health" -UseBasicParsing
+                if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+      - job: DeployFrontendProd
+        displayName: 'Deploy Frontend Prod'
+        pool: { name: $(agentPool) }
+        dependsOn: DeployBackendProd
+        environment: 'is3-prod'
+        steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Frontend Prod (container)'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(frontendAppProd)'
+              appType: 'webAppLinux'
+              runtimeStack: ''
+              imageName: '$(acrLoginServer)/$(frontendImageName):$(imageTag)'
+              appSettings: >
+                -NODE_ENV production
+                -RUNTIME_PUBLIC_API_URL $(backendUrlProd)
+                -INTERNAL_API $(backendUrlProd)
+                -NEXT_PUBLIC_API_URL $(backendUrlProd)
+
+          - task: PowerShell@2
+            displayName: 'Health Check Frontend PROD (/)'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $ErrorActionPreference = 'Stop'
+                Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                $resp = Invoke-WebRequest -Uri "$(frontendUrlProd)" -UseBasicParsing
+                if ($resp.StatusCode -ne 200) { throw "Frontend check FAILED: $($resp.StatusCode)" }

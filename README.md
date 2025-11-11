@@ -93,6 +93,12 @@ docker compose -f docker-compose.yaml down --volumes --remove-orphans
 - Backend health PROD: http://localhost:8000/health
 - Backend health QA:   http://localhost:8001/health
 
+### URLs en Azure (cuando se despliega con CI/CD)
+- Frontend QA:   https://is3-frontend-qa.azurewebsites.net
+- Backend QA:    https://is3-backend-qa.azurewebsites.net/health
+- Frontend PROD: https://is3-frontend-prod.azurewebsites.net
+- Backend PROD:  https://is3-backend-prod.azurewebsites.net/health
+
 ## Conectarse a la base de datos
 Shell Postgres PROD:
 ```powershell
@@ -162,6 +168,43 @@ frontend_qa:
 - (Mejora) Añadir `NEXT_PUBLIC_ENV` para mostrar banner visual en la UI.
 - (Mejora) Automatizar build & push con GitHub Actions.
 - (Seguridad) Cambiar contraseñas por variables seguras en un `.env` no versionado.
+
+---
+## CI/CD en Azure DevOps (build once → deploy many)
+
+- Pipelines agregados:
+  - `azure-pipelines.release.yaml` (build + push + deploy QA/Prod, todo en uno)
+  - `azure-pipelines.deploy.yaml` (solo deploy QA/Prod consumiendo un tag de imagen existente del ACR)
+- Flujo:
+  - Modo todo-en-uno (`azure-pipelines.release.yaml`):
+    1) BuildAndPush: construye imágenes `is3-frontend:<tag>` e `is3-backend:<tag>` y las publica en ACR.
+    2) Deploy_Testing: despliega a Web Apps QA usando el MISMO `<tag>`; valida `/health` y `/`.
+    3) Aprobación manual.
+    4) Deploy_Prod: despliega el MISMO `<tag>` a Prod; valida salud.
+
+  - Modo separado (Build existente + `azure-pipelines.deploy.yaml`):
+    1) Tu build (TP04) publica imágenes en ACR con un `<tag>` conocido (p. ej. BuildId).
+    2) Ejecutas `azure-pipelines.deploy.yaml` pasando `imageTag=<tag>` para QA.
+    3) Aprobación manual.
+    4) El mismo `imageTag` se despliega a Prod.
+
+Requisitos en Azure DevOps:
+- Service Connection (Docker Registry) apuntando al ACR: `is3acr-service-connection`.
+- Service Connection (Azure Resource Manager) para Web Apps: `IS3-Azure-Subscription`.
+- Environments `is3-qa` e `is3-prod`; configurar aprobación en `is3-prod`.
+
+Ejecutar el deploy-only pipeline manualmente (ejemplo):
+- Variables requeridas: `imageTag` (el tag exacto existente en ACR).
+- Corre el pipeline y define `imageTag` en el formulario de ejecución.
+
+Variables por entorno (App Settings en Web Apps):
+- Backend QA: `PORT=8000`, `ENV=qa`, `DATABASE_URL=postgres://app:***@.../app?sslmode=require`.
+- Backend PROD: `PORT=8000`, `ENV=production`, `DATABASE_URL=postgres://app:***@.../app?sslmode=require`.
+- Frontend QA: `RUNTIME_PUBLIC_API_URL=https://is3-backend-qa.azurewebsites.net`, `INTERNAL_API=...`, `NEXT_PUBLIC_API_URL=...`.
+- Frontend PROD: `RUNTIME_PUBLIC_API_URL=https://is3-backend-prod.azurewebsites.net`, `INTERNAL_API=...`, `NEXT_PUBLIC_API_URL=...`.
+
+Estrategia de rollback:
+- Hacer redeploy del release anterior (mismo tag previo) desde el historial de releases.
 
 ---
 Para dudas o nuevas tareas (por ejemplo agregar banner de entorno), abrir un issue o pedirlo directamente.
