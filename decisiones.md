@@ -68,9 +68,20 @@ El objetivo fue dejar algo simple, claro y que se pueda explicar en la defensa: 
 
 ### Arquitectura elegida (cloud + release)
 
+- Elegimos Azure Web Apps (Linux/Containers) para desplegar el backend (Go) y opcionalmente el frontend (Next.js). Esto nos permite cumplir el patrón “build once → deploy many” con imágenes inmutables.
+- Usamos Azure Container Registry (ACR) como registry privado para las imágenes (requisito del TP08 y base del TP05).
+- En Azure DevOps utilizamos un pipeline multi-stage YAML con Environments QA (sin aprobación) y PROD (con aprobación manual).
+
 ### Estrategia “build once → deploy many”
 
+- Construimos la imagen del backend UNA sola vez, la publicamos en ACR con un tag inmutable (BuildId) y desplegamos el mismo tag a QA y, tras aprobación, a PROD.
+- Beneficio: el binario que validamos en QA es exactamente el que llega a PROD (sin re-builds intermedios).
+
 ### Stages y aprobaciones
+
+- BuildAndPush (TP08): docker build del backend Go y push a ACR.
+- Deploy_QA: despliegue del mismo tag a la Web App QA y health check a `/health`.
+- Deploy_PROD: requiere aprobación manual en el Environment PROD; luego despliegue y health check a `/health`.
 
 ### Variables y secretos por entorno
   - PORT=8000
@@ -81,11 +92,16 @@ El objetivo fue dejar algo simple, claro y que se pueda explicar en la defensa: 
 
 ### Evidencias previstas
 
+- Capturas de: ACR con la imagen `is3-backend:<BuildId>`, pipelines exitosos (QA y PROD), aprobación manual, health checks 200 OK en QA y PROD, App Settings configurados por entorno en Web Apps.
+
 ### Rollback
+
+- Simple: redeploy del tag anterior desde el historial del pipeline (mismo artifact/imágen ya publicada en ACR). Alternativa: disparar manualmente el pipeline de deploy-only (`azure-pipelines.deploy.yaml`) seteando `imageTag` al valor anterior.
 
 ### Archivos de pipeline agregados
   - `azure-pipelines.release.yaml`: BuildAndPush → Deploy_Testing → Deploy_Prod (todo en uno, build y deploy).
   - `azure-pipelines.deploy.yaml`: sólo despliegue QA/Prod consumiendo un `imageTag` ya existente en ACR.
+  - `azure-pipelines.tp05-08-backend.yaml`: pipeline enfocado en backend Go + ACR + Web App (Linux/Containers) con QA→PROD, aprobaciones y health checks (cubre TP05 y TP08).
   - Requisitos comunes:
     - Service connection Docker Registry (ACR): para login/push o referenciar imágenes.
     - Service connection Azure Resource Manager: para Web Apps.
@@ -140,3 +156,28 @@ Notas:
 - DOCKER_REGISTRY_SERVER_* configurado en las Web Apps para permitir pull de imágenes privadas del ACR.
 - DATABASE_URL (Flexible Server): formato `postgres://app:<PASS>@<server>.postgres.database.azure.com:5432/app?sslmode=require`.
 - Deploy_Prod: despliega el mismo tag a producción y revalida salud; si falla, se recomienda redeploy del tag previo.
+
+---
+
+## TP08 – Azure Container Registry (ACR) aplicado al backend Go
+
+### Objetivo
+Construir y versionar la imagen del backend (Go) y publicarla en ACR, integrándose con el pipeline de TP05 para hacer CD a QA y PROD.
+
+### Decisiones técnicas
+- Registry: ACR por cercanía con Web Apps, RBAC/identidades y rendimiento en pulls.
+- Tagging: usamos `$(Build.BuildId)` como tag inmutable; opcionalmente se pueden agregar tags semánticos (vX.Y.Z) en releases.
+- Seguridad: las credenciales de ACR se manejan mediante un Service Connection de tipo Docker Registry en Azure DevOps; no se versionan secretos.
+
+### Flujo de publicación
+1) `Docker@2 login` usando el service connection a ACR.
+2) `Docker@2 buildAndPush` con `repository: $(acrLoginServer)/is3-backend` y `tags: $(Build.BuildId)`.
+3) Validación: verificar la imagen en el portal de ACR y la referencia en los pasos de deploy.
+
+### Integración con TP05
+- El stage Deploy usa la misma referencia `$(acrLoginServer)/is3-backend:$(Build.BuildId)` para QA y PROD, asegurando inmutabilidad.
+- Health checks en ambos entornos validan que la nueva versión está activa.
+
+### Evidencias TP08
+- Capturas del repositorio de imágenes en ACR con el tag construido.
+- Logs de pipeline con los pasos de `buildAndPush` exitosos.

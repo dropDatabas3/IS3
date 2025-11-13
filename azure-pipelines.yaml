@@ -31,6 +31,22 @@ variables:
   patchVersion: $[counter(variables['Build.SourceBranchName'], 0)]
   buildVersion: '$(majorVersion).$(minorVersion).$(patchVersion)'
 
+  # === TP05/TP08: ACR + Deploy backend (Go) a Web Apps Linux (Containers) ===
+  # Conexiones y ACR
+  azureSubscription: 'azure-tp05-connection'          # Service connection Azure RM (ya creada)
+  dockerRegistryServiceConnection: 'acr-connection'   # Service connection a tu ACR
+  acrLoginServer: 'acrpalacionallar.azurecr.io'       # Login server real de tu ACR
+
+  # Imagen backend y tag inmutable (build once → deploy many)
+  backendImageName: 'is3-backend'
+  imageTag: '$(Build.BuildId)'
+
+  # Web Apps Linux (containers) – Opción A
+  backendAppQA:   'backend-tp05-qa-palacio-nallar'
+  backendAppProd: 'backend-tp05-prod-palacio-nallar'
+  backendUrlQA:   'https://backend-tp05-qa-palacio-nallar.azurewebsites.net'
+  backendUrlProd: 'https://backend-tp05-prod-palacio-nallar.azurewebsites.net'
+
 stages:
 - stage: CI
   displayName: 'Continuous Integration'
@@ -172,3 +188,105 @@ stages:
         echo  - backend-bin (app.exe)
         echo  - backend-config (go.mod)
       displayName: 'Display Build Summary'
+
+# ======================================================
+# TP08: Build & Push backend (Go) → ACR
+# TP05: Deploy QA → aprobación → Deploy PROD (Web Apps Linux containers)
+# ======================================================
+
+- stage: BuildAndPushBackend
+  displayName: 'TP08: Build & Push Backend to ACR'
+  dependsOn: CI
+  condition: succeeded()
+  jobs:
+  - job: BuildPush
+    displayName: 'Docker build/push (backend)'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - checkout: self
+        clean: true
+
+      - task: Docker@2
+        displayName: 'Login to ACR'
+        inputs:
+          command: 'login'
+          containerRegistry: '$(dockerRegistryServiceConnection)'
+
+      - task: Docker@2
+        displayName: 'Build & Push Backend'
+        inputs:
+          command: 'buildAndPush'
+          repository: '$(acrLoginServer)/$(backendImageName)'
+          Dockerfile: '$(backendPath)/Dockerfile'
+          buildContext: '$(backendPath)'
+          tags: |
+            $(imageTag)
+
+- stage: Deploy_QA
+  displayName: 'TP05: Deploy Backend to QA'
+  dependsOn: BuildAndPushBackend
+  condition: succeeded()
+  jobs:
+  - job: DeployBackendQA
+    displayName: 'Deploy Backend (QA)'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'QA'   # Environment QA en Azure DevOps (sin aprobación)
+    steps:
+      - task: AzureWebApp@1
+        displayName: 'Deploy Backend QA (container)'
+        inputs:
+          azureSubscription: '$(azureSubscription)'
+          appName: '$(backendAppQA)'
+          appType: 'webAppLinux'
+          runtimeStack: ''
+          imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+          appSettings: >
+            -PORT 8000
+            -ENV qa
+            -DATABASE_URL $(DATABASE_URL_QA)
+
+      - task: PowerShell@2
+        displayName: 'Health Check QA (/health)'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $ErrorActionPreference = 'Stop'
+            Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+            $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
+            if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+- stage: Deploy_PROD
+  displayName: 'TP05: Deploy Backend to PROD (Approval)'
+  dependsOn: Deploy_QA
+  condition: succeeded()
+  jobs:
+  - job: DeployBackendProd
+    displayName: 'Deploy Backend (PROD)'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'PROD'  # Configurar aprobación manual en Environment PROD
+    steps:
+      - task: AzureWebApp@1
+        displayName: 'Deploy Backend PROD (container)'
+        inputs:
+          azureSubscription: '$(azureSubscription)'
+          appName: '$(backendAppProd)'
+          appType: 'webAppLinux'
+          runtimeStack: ''
+          imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+          appSettings: >
+            -PORT 8000
+            -ENV production
+            -DATABASE_URL $(DATABASE_URL_PROD)
+
+      - task: PowerShell@2
+        displayName: 'Health Check PROD (/health)'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $ErrorActionPreference = 'Stop'
+            Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+            $resp = Invoke-WebRequest -Uri "$(backendUrlProd)/health" -UseBasicParsing
+            if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }

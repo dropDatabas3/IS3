@@ -176,11 +176,28 @@ frontend_qa:
 - (Seguridad) Cambiar contraseñas por variables seguras en un `.env` no versionado.
 
 ---
+## TP05/TP08 – Backend Go con ACR y Web App (Containers)
+
+Para cubrir TP05 (CD con QA→PROD y aprobaciones) y TP08 (uso de ACR), puedes usar el pipeline `azure-pipelines.tp05-08-backend.yaml`.
+
+Checklist de configuración:
+- Azure: crear ACR y dos Web Apps Linux (containers) para backend: QA y PROD.
+- Azure DevOps:
+  - Service connection Azure RM: `azure-tp05-connection` (o ajusta la variable `azureSubscription`).
+  - Service connection Docker Registry a tu ACR (ajusta `dockerRegistryServiceConnection`).
+  - Environments: `QA` y `PROD` (agrega aprobación manual en `PROD`).
+  - Variables secretas: `DATABASE_URL_QA`, `DATABASE_URL_PROD`.
+- Variables del YAML: ajusta `acrLoginServer`, `backendAppQA`, `backendAppProd`, `backendUrlQA`, `backendUrlProd`.
+
+Rollback: redeploy del tag anterior (BuildId previo) desde el historial del pipeline.
+
+---
 ## CI/CD en Azure DevOps (build once → deploy many)
 
 - Pipelines agregados:
   - `azure-pipelines.release.yaml` (build + push + deploy QA/Prod, todo en uno)
   - `azure-pipelines.deploy.yaml` (solo deploy QA/Prod consumiendo un tag de imagen existente del ACR)
+  - `azure-pipelines.tp05-08-backend.yaml` (backend Go → ACR → Web App Linux Containers, QA→PROD con aprobación y health checks)
 - Flujo:
   - Modo todo-en-uno (`azure-pipelines.release.yaml`):
     1) BuildAndPush: construye imágenes `is3-frontend:<tag>` e `is3-backend:<tag>` y las publica en ACR.

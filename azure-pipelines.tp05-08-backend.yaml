@@ -1,0 +1,147 @@
+## Azure DevOps Pipeline – TP05/TP08 (Backend Go → ACR → Web App Linux Containers)
+#
+# Objetivo:
+# - TP08: Build & push de la imagen del backend (Go) a Azure Container Registry (ACR)
+# - TP05: CD a QA y luego PROD (misma imagen/tag), con aprobación manual y health checks
+#
+# Requisitos previos en Azure DevOps:
+# - Service connection (Azure Resource Manager): azure-tp05-connection
+# - Service connection (Docker Registry) apuntando a tu ACR: <acr-service-connection>
+# - Environments: QA (sin aprobación) y PROD (con aprobación manual)
+# - Variables/Secrets: DATABASE_URL_QA, DATABASE_URL_PROD (marcadas como secret)
+
+trigger:
+  branches:
+    include: [ main ]
+
+pr:
+  branches:
+    include: [ main ]
+
+variables:
+  # Agent VM (Microsoft-hosted)
+  vmImage: 'ubuntu-latest'
+
+  # Azure connections
+  azureSubscription: 'azure-tp05-connection'         # Azure RM service connection (ya creada por el alumno)
+  dockerRegistryServiceConnection: 'acr-connection'  # Service connection a tu ACR
+
+  # ACR settings (ajusta con tu ACR real)
+  acrLoginServer: 'acrpalacionallar.azurecr.io'   # login server real de tu ACR
+  backendImageName: 'is3-backend'
+
+  # Tag inmutable (build once → deploy many)
+  imageTag: '$(Build.BuildId)'
+
+  # Web Apps (Linux/Containers) para BACKEND (ajusta nombres reales)
+  backendAppQA:   'backend-tp05-qa-palacio-nallar'
+  backendAppProd: 'backend-tp05-prod-palacio-nallar'
+
+  # URLs públicas para health checks
+  backendUrlQA:   'https://backend-tp05-qa-palacio-nallar.azurewebsites.net'
+  backendUrlProd: 'https://backend-tp05-prod-palacio-nallar.azurewebsites.net'
+
+stages:
+  # =========================
+  # BUILD & PUSH (TP08)
+  # =========================
+  - stage: BuildAndPushBackend
+    displayName: 'Build & Push Backend to ACR'
+    jobs:
+      - job: BuildPush
+        displayName: 'Docker build/push (backend)'
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
+            clean: true
+
+          - task: Docker@2
+            displayName: 'Login to ACR'
+            inputs:
+              command: 'login'
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+
+          - task: Docker@2
+            displayName: 'Build & Push Backend'
+            inputs:
+              command: 'buildAndPush'
+              repository: '$(acrLoginServer)/$(backendImageName)'
+              Dockerfile: 'ucc-soft-arch-golang/Dockerfile'
+              buildContext: 'ucc-soft-arch-golang'
+              tags: |
+                $(imageTag)
+
+  # =========================
+  # DEPLOY QA (TP05)
+  # =========================
+  - stage: Deploy_QA
+    displayName: 'Deploy to QA'
+    dependsOn: BuildAndPushBackend
+    condition: succeeded()
+    jobs:
+      - job: DeployBackendQA
+        displayName: 'Deploy Backend (QA)'
+        pool:
+          vmImage: $(vmImage)
+        environment: 'QA'   # Usa el Environment QA que ya creaste
+        steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Backend QA (container)'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(backendAppQA)'
+              appType: 'webAppLinux'
+              runtimeStack: ''
+              imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+              appSettings: >
+                -PORT 8000
+                -ENV qa
+                -DATABASE_URL $(DATABASE_URL_QA)
+
+          - task: PowerShell@2
+            displayName: 'Health Check QA (/health)'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $ErrorActionPreference = 'Stop'
+                Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
+                if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+  # =========================
+  # DEPLOY PROD (TP05 + aprobación manual)
+  # =========================
+  - stage: Deploy_PROD
+    displayName: 'Deploy to PROD'
+    dependsOn: Deploy_QA
+    condition: succeeded()
+    jobs:
+      - job: DeployBackendProd
+        displayName: 'Deploy Backend (PROD)'
+        pool:
+          vmImage: $(vmImage)
+        environment: 'PROD'  # Configura aprobación manual en este Environment
+        steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Backend PROD (container)'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(backendAppProd)'
+              appType: 'webAppLinux'
+              runtimeStack: ''
+              imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+              appSettings: >
+                -PORT 8000
+                -ENV production
+                -DATABASE_URL $(DATABASE_URL_PROD)
+
+          - task: PowerShell@2
+            displayName: 'Health Check PROD (/health)'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $ErrorActionPreference = 'Stop'
+                Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                $resp = Invoke-WebRequest -Uri "$(backendUrlProd)/health" -UseBasicParsing
+                if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
