@@ -1,0 +1,3276 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>ucc-soft-arch-golang.git: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/Guidotss/ucc-soft-arch-golang.git/main.go (0.0%)</option>
+				
+				<option value="file1">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/auth_adapter.go (100.0%)</option>
+				
+				<option value="file2">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/category_adapter.go (100.0%)</option>
+				
+				<option value="file3">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/comments_adapter.go (100.0%)</option>
+				
+				<option value="file4">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/course_adapter.go (100.0%)</option>
+				
+				<option value="file5">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/inscription_adapter.go (100.0%)</option>
+				
+				<option value="file6">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/rating_adapter.go (100.0%)</option>
+				
+				<option value="file7">github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter/user_adapter.go (100.0%)</option>
+				
+				<option value="file8">github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/categories/categories_client.go (83.3%)</option>
+				
+				<option value="file9">github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/comments/comments_clients.go (83.3%)</option>
+				
+				<option value="file10">github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/courses/course_client.go (87.8%)</option>
+				
+				<option value="file11">github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/inscriptos/inscriptos_client.go (94.0%)</option>
+				
+				<option value="file12">github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/rating/rating_clients.go (78.6%)</option>
+				
+				<option value="file13">github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/users/users_client.go (88.2%)</option>
+				
+				<option value="file14">github.com/Guidotss/ucc-soft-arch-golang.git/src/config/db_connection.go (0.0%)</option>
+				
+				<option value="file15">github.com/Guidotss/ucc-soft-arch-golang.git/src/config/envs.go (90.0%)</option>
+				
+				<option value="file16">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/auth/auth_controller.go (91.7%)</option>
+				
+				<option value="file17">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/categories/categories.controller.go (87.5%)</option>
+				
+				<option value="file18">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/comments/comments.controller.go (79.3%)</option>
+				
+				<option value="file19">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/courses/courses.controller.go (76.9%)</option>
+				
+				<option value="file20">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/health_contoller.go (100.0%)</option>
+				
+				<option value="file21">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/inscriptions/inscriptions.controller.go (60.3%)</option>
+				
+				<option value="file22">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/rating/rating.controller.go (83.3%)</option>
+				
+				<option value="file23">github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/users/users_controller.go (89.5%)</option>
+				
+				<option value="file24">github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors/errors.go (100.0%)</option>
+				
+				<option value="file25">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/ErrorHandler.go (100.0%)</option>
+				
+				<option value="file26">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/admin/adminAuth.mid.go (90.3%)</option>
+				
+				<option value="file27">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/course/checkCourseId.mid.go (100.0%)</option>
+				
+				<option value="file28">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/enroll/courseExist.mid.go (95.8%)</option>
+				
+				<option value="file29">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/enroll/isAlreadyEnroll.mid.go (100.0%)</option>
+				
+				<option value="file30">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/user/IsEmailAlreadyRegistered.mid.go (100.0%)</option>
+				
+				<option value="file31">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/user/registerInputCheck.mid.go (100.0%)</option>
+				
+				<option value="file32">github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/user/userAuth.mid.go (75.0%)</option>
+				
+				<option value="file33">github.com/Guidotss/ucc-soft-arch-golang.git/src/model/category.model.go (0.0%)</option>
+				
+				<option value="file34">github.com/Guidotss/ucc-soft-arch-golang.git/src/model/courses.model.go (0.0%)</option>
+				
+				<option value="file35">github.com/Guidotss/ucc-soft-arch-golang.git/src/model/users.model.go (0.0%)</option>
+				
+				<option value="file36">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/auth_routes.go (100.0%)</option>
+				
+				<option value="file37">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/category_routes.go (100.0%)</option>
+				
+				<option value="file38">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/comments_routes.go (100.0%)</option>
+				
+				<option value="file39">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/courses_routes.go (100.0%)</option>
+				
+				<option value="file40">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/health_routes.go (100.0%)</option>
+				
+				<option value="file41">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/inscriptions_routes.go (100.0%)</option>
+				
+				<option value="file42">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/rating_routes.go (100.0%)</option>
+				
+				<option value="file43">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/router.go (100.0%)</option>
+				
+				<option value="file44">github.com/Guidotss/ucc-soft-arch-golang.git/src/routes/users_routes.go (100.0%)</option>
+				
+				<option value="file45">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/auth_service.go (92.3%)</option>
+				
+				<option value="file46">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/categories_service.go (87.5%)</option>
+				
+				<option value="file47">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/comments_service.go (87.0%)</option>
+				
+				<option value="file48">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/courses_services.go (42.4%)</option>
+				
+				<option value="file49">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/inscription_service.go (58.3%)</option>
+				
+				<option value="file50">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/rating_service.go (84.2%)</option>
+				
+				<option value="file51">github.com/Guidotss/ucc-soft-arch-golang.git/src/services/user.services.go (81.8%)</option>
+				
+				<option value="file52">github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/bcrypt/compare_password.go (100.0%)</option>
+				
+				<option value="file53">github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/bcrypt/hash_password.go (75.0%)</option>
+				
+				<option value="file54">github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/jwt/sign_document.go (80.0%)</option>
+				
+				<option value="file55">github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/jwt/verify_token.go (80.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "fmt"
+        "net/http"
+        "time"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/config"
+        middlewares "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/routes"
+        "github.com/gin-contrib/cors"
+        "github.com/gin-gonic/gin"
+)
+
+func main() <span class="cov0" title="0">{
+        // CI Test: Configuración inicial de la aplicación
+        // Cargar variables de entorno
+        envs := config.LoadEnvs(".env")
+        db := config.NewConnection((envs.Get("DATABASE_URL")))
+
+        // Llamar a la función que define las rutas de la aplicación
+        corsConfig := cors.DefaultConfig()
+        corsConfig.AllowAllOrigins = true
+        corsConfig.AllowMethods = []string{"POST", "GET", "PUT", "OPTIONS", "DELETE"}
+        corsConfig.AllowHeaders = []string{"Content-Type", "Authorization"}
+        corsConfig.ExposeHeaders = []string{"Content-Length"}
+        corsConfig.AllowCredentials = true
+        corsConfig.MaxAge = 12 * time.Hour
+
+        router := gin.Default()
+        router.Use(cors.New(corsConfig))
+        router.Use(middlewares.ErrorHandler())
+        routes.AppRoutes(router, db)
+
+        // Iniciar el servidor
+        startServer(router, envs)
+}</span>
+
+func startServer(router *gin.Engine, envs config.Envs) <span class="cov0" title="0">{
+        serverPort := envs.Get("PORT")
+
+        server := &amp;http.Server{
+                Addr:           ":" + serverPort,
+                Handler:        router,
+                ReadTimeout:    10 * time.Second,
+                WriteTimeout:   10 * time.Second,
+                MaxHeaderBytes: 1 &lt;&lt; 20,
+        }
+
+        if err := server.ListenAndServe(); err != nil </span><span class="cov0" title="0">{
+                _ = fmt.Errorf("error starting server: %v", err)
+                panic(err)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package adapter
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/users"
+        controller "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/auth"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func AuthAdapter(Db *gorm.DB) *controller.AuthController <span class="cov10" title="34">{
+        client := users.NewUsersClient(Db)
+        userService := services.NewUserService(client)
+        authService := services.NewAuthService(&amp;userService, client)
+        return controller.NewAuthController(&amp;authService)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package adapter
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/categories"
+        controller "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/categories"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func CategoryAdapter(Db *gorm.DB) *controller.CategoriesController <span class="cov10" title="34">{
+        client := categories.NewCategoryClient(Db)
+        service := services.NewCategoriesService(client)
+        return controller.NewCategoriesController(service)
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package adapter
+
+import (
+        client "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/comments"
+        controllers "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/comments"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func CommentAdapter(db *gorm.DB) *controllers.CommentsController <span class="cov10" title="34">{
+        client := client.NewCommentsClient(db)
+        service := services.NewCommentsService(client)
+        return controllers.NewCommentsController(service)
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package adapter
+
+import (
+        client "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/courses"
+        controllers "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/courses"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func CourseAdapter(db *gorm.DB) *controllers.CourseController <span class="cov10" title="34">{
+        client := client.NewCourseClient(db)
+        service := services.NewCourseService(client)
+        return controllers.NewCourseController(service)
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package adapter
+
+import (
+        client "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/inscriptos"
+        controllers "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/inscriptions"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func InscriptionsAdapter(db *gorm.DB) (*controllers.InscriptionController, services.IInscriptionService) <span class="cov10" title="34">{
+        client := client.NewInscriptionClient(db)
+        service := services.NewInscriptionService(client)
+        return controllers.NewInscriptionController(service), service
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package adapter
+
+import (
+        client "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/rating"
+        controllers "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/rating"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func RatingAdapter(db *gorm.DB) *controllers.RatingController <span class="cov10" title="34">{
+        client := client.NewRatingClient(db)
+        service := services.NewRatingService(client)
+        return controllers.NewRatingController(service)
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package adapter
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/users"
+        controllers "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/users"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "gorm.io/gorm"
+)
+
+func UserAdapter(db *gorm.DB) (*controllers.UsersController, services.IUserService) <span class="cov10" title="34">{
+        client := users.NewUsersClient(db)
+        service := services.NewUserService(client)
+        return controllers.NewUserController(service), service
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package categories
+
+import (
+        "errors"
+        "net/http"
+        "strings"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        log "github.com/sirupsen/logrus"
+        "gorm.io/gorm"
+)
+
+type CategoriesClient struct {
+        Db *gorm.DB
+}
+
+func NewCategoryClient(db *gorm.DB) *CategoriesClient <span class="cov10" title="102">{
+        return &amp;CategoriesClient{Db: db}
+}</span>
+
+func (c *CategoriesClient) Create(category model.Category) (model.Category, error) <span class="cov9" title="68">{
+        result := c.Db.Create(&amp;category)
+        if result.Error != nil </span><span class="cov7" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "duplicate key value violates unique constraint"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DUPLICATE_IDENTIFIER",
+                                "A category with the same identifier already exists. Please use a different identifier.",
+                                http.StatusConflict)</span>
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov7" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov7" title="34">return model.Category{}, err</span>
+        }
+        <span class="cov7" title="34">log.Debug("Categoria creado con exito wachin, su id es: ", result)
+        return category, nil</span>
+}
+
+func (c *CategoriesClient) GetAll() (model.Categories, error) <span class="cov9" title="68">{
+        var categories model.Categories
+        err := c.Db.Find(&amp;categories).Error
+        if err != nil </span><span class="cov7" title="34">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("NOT_FOUND", "There is no courses", http.StatusNotFound)
+                }</span>
+                <span class="cov7" title="34">return nil, customError.NewError("DB_ERROR", "Error retrieving course from database", http.StatusInternalServerError)</span>
+        }
+        <span class="cov7" title="34">return categories, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package comments
+
+import (
+        "errors"
+        "net/http"
+        "strings"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        model "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+        "gorm.io/gorm"
+)
+
+type CommentsClient struct {
+        Db *gorm.DB
+}
+
+func NewCommentsClient(db *gorm.DB) *CommentsClient <span class="cov10" title="170">{
+        return &amp;CommentsClient{Db: db}
+}</span>
+
+func (c *CommentsClient) NewComment(comment model.Comment) (model.Comment, error) <span class="cov8" title="68">{
+        result := c.Db.Create(&amp;comment)
+        if result.Error != nil </span><span class="cov7" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov7" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov7" title="34">return model.Comment{}, err</span>
+        }
+        <span class="cov7" title="34">return comment, nil</span>
+}
+
+func (c *CommentsClient) GetCourseComments(courseID uuid.UUID) (model.Comments, error) <span class="cov9" title="102">{
+        var comments model.Comments
+        var rawResults []map[string]interface{}
+        err := c.Db.Raw(`
+        SELECT C.Text, U.Name, U.Avatar, U.id as User_id
+        FROM comments C
+        JOIN users U ON C.user_id = U.id
+        WHERE C.course_id = ?
+    `, courseID).Scan(&amp;rawResults).Error
+
+        if err != nil </span><span class="cov7" title="34">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("COMMENTS_NOT_FOUND", "No comments found for the specified course", http.StatusNotFound)
+                }</span> else<span class="cov7" title="34"> if strings.Contains(err.Error(), "connection") </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("DB_CONNECTION_ERROR", "Database connection error. Please try again later.", http.StatusInternalServerError)
+                }</span> else<span class="cov7" title="34"> {
+                        return nil, customError.NewError("UNEXPECTED_ERROR", "An unexpected error occurred. Please try again later.", http.StatusInternalServerError)
+                }</span>
+        }
+        <span class="cov8" title="68">if len(rawResults) == 0 </span><span class="cov7" title="34">{
+                return nil, customError.NewError("COMMENTS_NOT_FOUND", "No comments found for the specified course", http.StatusNotFound)
+        }</span>
+
+        <span class="cov7" title="34">for i := 0; i &lt; len(rawResults); i++ </span><span class="cov7" title="34">{
+                comment := model.Comment{
+                        Text:       rawResults[i]["text"].(string),
+                        UserName:   rawResults[i]["name"].(string),
+                        UserAvatar: rawResults[i]["avatar"].(string),
+                        UserId:     parseUUID(rawResults[i]["user_id"]),
+                }
+                comments = append(comments, comment)
+        }</span>
+
+        <span class="cov7" title="34">return comments, nil</span>
+}
+
+func (c *CommentsClient) UpdateComment(comment model.Comment) (model.Comment, error) <span class="cov8" title="68">{
+        result := c.Db.Table("comments").
+                Where("user_id = ? AND course_id = ?", comment.UserId, comment.CourseId).
+                Updates(&amp;comment)
+        if result.Error != nil </span><span class="cov7" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov7" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov7" title="34">return model.Comment{}, err</span>
+        }
+        <span class="cov7" title="34">return comment, nil</span>
+}
+
+// FUNCION PARA PARSEAR UUID
+func parseUUID(value interface{}) uuid.UUID <span class="cov7" title="34">{
+        if value != nil </span><span class="cov0" title="0">{
+                id, _ := uuid.Parse(value.(string))
+                return id
+        }</span>
+        <span class="cov7" title="34">return uuid.Nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package courses
+
+import (
+        "errors"
+        "fmt"
+        "net/http"
+        "strings"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+
+        "gorm.io/gorm"
+)
+
+type CourseClient struct {
+        Db *gorm.DB
+}
+
+func NewCourseClient(db *gorm.DB) *CourseClient <span class="cov8" title="204">{
+        return &amp;CourseClient{Db: db}
+}</span>
+
+func (c *CourseClient) Create(course model.Course) (model.Course, error) <span class="cov7" title="136">{
+        result := c.Db.Create(&amp;course)
+        if result.Error != nil </span><span class="cov6" title="68">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "duplicate key value violates unique constraint"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DUPLICATE_IDENTIFIER",
+                                "A course with the same identifier already exists. Please use a different identifier.",
+                                http.StatusConflict)</span>
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov6" title="68">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov6" title="68">return model.Course{}, err</span>
+        }
+        <span class="cov6" title="68">return course, nil</span>
+}
+
+func (c *CourseClient) GetAll(filter string) (model.Courses, error) <span class="cov7" title="136">{
+        var courses model.Courses
+        var rawResults []map[string]interface{}
+        if filter == "" </span><span class="cov7" title="102">{
+                err := c.Db.Raw(
+                        `SELECT 
+                    courses.*, 
+                    categories.category_name, 
+                    COALESCE(r.ratingavg, 0) as ratingavg
+                FROM 
+                    courses
+                LEFT JOIN 
+                    (SELECT course_id, AVG(rating) as ratingavg 
+                FROM ratings
+            GROUP BY course_id) as r ON 
+                    courses.id = r.course_id
+                JOIN 
+                    categories 
+                ON 
+                    courses.category_id = categories.id
+                WHERE                                 
+                        courses.deleted_at IS NULL;`).Scan(&amp;rawResults).Error
+                if err != nil </span><span class="cov5" title="34">{
+                        if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                                return nil, customError.NewError("NOT_FOUND", "There is no courses", http.StatusNotFound)
+                        }</span>
+                        <span class="cov5" title="34">return nil, customError.NewError("DB_ERROR", "Error retrieving course from database", http.StatusInternalServerError)</span>
+                }
+        } else<span class="cov5" title="34"> {
+                err := c.Db.Raw(
+                        `SELECT
+                                courses.*,
+                                categories.category_name,
+                                COALESCE(r.ratingavg, 0) as ratingavg
+                        FROM
+                                courses
+                        LEFT JOIN
+                                (SELECT course_id, AVG(rating) as ratingavg
+                                FROM ratings
+                                GROUP BY course_id) as r ON
+                                courses.id = r.course_id
+                        JOIN
+                                categories
+                        ON
+                                courses.category_id = categories.id
+                        WHERE
+                                courses.deleted_at IS NULL AND (
+                                        LOWER(courses.course_name) LIKE LOWER(?) OR
+                                        LOWER(courses.course_description) LIKE LOWER(?) OR
+                                        LOWER(categories.category_name) LIKE LOWER(?)
+                                )`, "%"+filter+"%", "%"+filter+"%", "%"+filter+"%").Scan(&amp;rawResults).Error
+                if err != nil </span><span class="cov0" title="0">{
+                        fmt.Println("error: ", err)
+                        if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                                return nil, customError.NewError("NOT_FOUND", "There is no courses", http.StatusNotFound)
+                        }</span>
+                        <span class="cov0" title="0">return nil, customError.NewError("DB_ERROR", "Error retrieving course from database", http.StatusInternalServerError)</span>
+                }
+        }
+        <span class="cov7" title="102">for _, data := range rawResults </span><span class="cov6" title="68">{
+                course := model.Course{
+                        Id:                parseUUID(data["id"]),
+                        CourseName:        data["course_name"].(string),
+                        CourseDescription: data["course_description"].(string),
+                        CoursePrice:       toFloat64(data["course_price"]),
+                        CourseDuration:    toInt(data["course_duration"]),
+                        CourseInitDate:    data["course_init_date"].(string),
+                        CourseState:       toBool(data["course_state"]),
+                        CourseCapacity:    toInt(data["course_capacity"]),
+                        CourseImage:       data["course_image"].(string),
+                        CategoryID:        parseUUID(data["category_id"]),
+                        Category: model.Category{
+                                CategoryName: data["category_name"].(string),
+                        },
+                        RatingAvg: toFloat64(data["ratingavg"]),
+                }
+                courses = append(courses, course)
+        }</span>
+
+        <span class="cov7" title="102">return courses, nil</span>
+}
+
+func (c *CourseClient) GetById(id uuid.UUID) (model.Course, error) <span class="cov7" title="102">{
+        var rawResult map[string]interface{}
+        err := c.Db.Raw(
+                `SELECT courses.*, categories.category_name ,r.ratingavg
+                        FROM courses, 
+                                (SELECT course_id , AVG(rating) as ratingavg 
+                                 FROM ratings GROUP BY course_id) as r, 
+                                categories
+                        WHERE 
+                                courses.id = r.course_id AND 
+                                courses.deleted_at IS NULL AND
+                                courses.category_id = categories.id AND
+                                courses.id = ?`, id).Scan(&amp;rawResult).Error
+        fmt.Println("rawresult: ", rawResult)
+        if err != nil </span><span class="cov5" title="34">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                        return model.Course{}, customError.NewError("NOT_FOUND", "Course not found", http.StatusNotFound)
+                }</span>
+                <span class="cov5" title="34">return model.Course{}, customError.NewError("DB_ERROR", "Error retrieving course from database", http.StatusInternalServerError)</span>
+        }
+        // When using Raw+Scan into a map, no rows results in a nil/empty map and no error; handle explicitly
+        <span class="cov6" title="68">if rawResult == nil || len(rawResult) == 0 </span><span class="cov5" title="34">{
+                return model.Course{}, customError.NewError("NOT_FOUND", "Course not found", http.StatusNotFound)
+        }</span>
+        <span class="cov5" title="34">course := model.Course{
+                Id:                parseUUID(rawResult["id"]),
+                CourseName:        rawResult["course_name"].(string),
+                CourseDescription: rawResult["course_description"].(string),
+                CoursePrice:       toFloat64(rawResult["course_price"]),
+                CourseDuration:    toInt(rawResult["course_duration"]),
+                CourseInitDate:    rawResult["course_init_date"].(string),
+                CourseState:       toBool(rawResult["course_state"]),
+                CourseCapacity:    toInt(rawResult["course_capacity"]),
+                CourseImage:       rawResult["course_image"].(string),
+                CategoryID:        parseUUID(rawResult["category_id"]),
+                Category: model.Category{
+                        CategoryName: rawResult["category_name"].(string),
+                },
+                RatingAvg: toFloat64(rawResult["ratingavg"]),
+        }
+        return course, nil</span>
+}
+func (c *CourseClient) UpdateCourse(course model.Course) (model.Course, error) <span class="cov6" title="68">{
+
+        result := c.Db.Table("courses").Where("id = ?", course.Id).Updates(&amp;course)
+
+        if result.Error != nil </span><span class="cov5" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "duplicate key value violates unique constraint"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DUPLICATE_IDENTIFIER",
+                                "A course with the same identifier or name already exists. Please use a different identifier or name.",
+                                http.StatusConflict)</span>
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov5" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov5" title="34">return model.Course{}, err</span>
+        }
+        <span class="cov5" title="34">return course, nil</span>
+}
+
+func (c *CourseClient) DeleteCourse(id uuid.UUID) error <span class="cov6" title="68">{
+        result := c.Db.Where("id = ?", id).Delete(&amp;model.Course{})
+        if result.Error != nil </span><span class="cov5" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov5" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov5" title="34">return err</span>
+        }
+        <span class="cov5" title="34">return nil</span>
+}
+
+// FUNCION PARA PARSEAR UUID
+func parseUUID(value interface{}) uuid.UUID <span class="cov8" title="272">{
+        if value != nil </span><span class="cov8" title="238">{
+                id, _ := uuid.Parse(value.(string))
+                return id
+        }</span>
+        <span class="cov5" title="34">return uuid.Nil</span>
+}
+
+// helpers to normalize sqlite vs postgres scan types
+func toBool(v interface{}) bool <span class="cov10" title="612">{
+        switch t := v.(type) </span>{
+        case bool:<span class="cov6" title="68">
+                return t</span>
+        case int64:<span class="cov7" title="136">
+                return t != 0</span>
+        case int:<span class="cov6" title="68">
+                return t != 0</span>
+        case float64:<span class="cov6" title="68">
+                return t != 0</span>
+        case []byte:<span class="cov7" title="102">
+                s := string(t)
+                return s == "1" || strings.EqualFold(s, "true")</span>
+        case string:<span class="cov7" title="136">
+                return t == "1" || strings.EqualFold(t, "true")</span>
+        default:<span class="cov5" title="34">
+                return false</span>
+        }
+}
+
+func toInt(v interface{}) int <span class="cov9" title="442">{
+        switch t := v.(type) </span>{
+        case int:<span class="cov5" title="34">
+                return t</span>
+        case int32:<span class="cov5" title="34">
+                return int(t)</span>
+        case int64:<span class="cov8" title="238">
+                return int(t)</span>
+        case float32:<span class="cov5" title="34">
+                return int(t)</span>
+        case float64:<span class="cov5" title="34">
+                return int(t)</span>
+        case []byte:<span class="cov5" title="34">
+                // best effort parse
+                s := string(t)
+                var n int
+                fmt.Sscanf(s, "%d", &amp;n)
+                return n</span>
+        default:<span class="cov5" title="34">
+                return 0</span>
+        }
+}
+
+func toFloat64(v interface{}) float64 <span class="cov9" title="408">{
+        switch t := v.(type) </span>{
+        case float64:<span class="cov8" title="204">
+                return t</span>
+        case float32:<span class="cov5" title="34">
+                return float64(t)</span>
+        case int:<span class="cov5" title="34">
+                return float64(t)</span>
+        case int64:<span class="cov6" title="68">
+                return float64(t)</span>
+        case []byte:<span class="cov5" title="34">
+                s := string(t)
+                var f float64
+                fmt.Sscanf(s, "%f", &amp;f)
+                return f</span>
+        default:<span class="cov5" title="34">
+                return 0</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package inscriptos
+
+import (
+        "errors"
+        "fmt"
+        "net/http"
+        "strings"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+        "gorm.io/gorm"
+)
+
+type InscriptosClient struct {
+        Db *gorm.DB
+}
+
+func NewInscriptionClient(db *gorm.DB) *InscriptosClient <span class="cov9" title="306">{
+        return &amp;InscriptosClient{Db: db}
+}</span>
+
+func (c *InscriptosClient) Enroll(inscripto model.Inscripto) (model.Inscripto, error) <span class="cov7" title="68">{
+        result := c.Db.Create(&amp;inscripto)
+
+        if result.Error != nil </span><span class="cov6" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov6" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov6" title="34">return model.Inscripto{}, err</span>
+        }
+        <span class="cov6" title="34">return inscripto, nil</span>
+}
+
+func (c *InscriptosClient) GetMyCourses(id uuid.UUID) (model.Courses, error) <span class="cov7" title="68">{
+        var rawResults []map[string]interface{}
+        err := c.Db.Raw(`
+        SELECT C.*, CAT.category_name
+                FROM courses C
+                JOIN inscriptos I ON I.course_id = C.id
+                JOIN users U ON I.user_id = U.id
+                JOIN categories CAT ON C.category_id = CAT.id
+                WHERE I.user_id = ?
+        `, id).Scan(&amp;rawResults).Error
+        if err != nil </span><span class="cov6" title="34">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("COMMENTS_NOT_FOUND", "No Courses found for the specified user", http.StatusNotFound)
+                }</span> else<span class="cov6" title="34"> if strings.Contains(err.Error(), "connection") </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("DB_CONNECTION_ERROR", "Database connection error. Please try again later.", http.StatusInternalServerError)
+                }</span> else<span class="cov6" title="34"> {
+                        return nil, customError.NewError("UNEXPECTED_ERROR", "An unexpected error occurred. Please try again later.", http.StatusInternalServerError)
+                }</span>
+        }
+        <span class="cov6" title="34">var courses model.Courses
+        for i := 0; i &lt; len(rawResults); i++ </span><span class="cov6" title="34">{
+                course := model.Course{
+                        Id:                parseUUID(rawResults[i]["id"]),
+                        CourseName:        rawResults[i]["course_name"].(string),
+                        CourseDescription: rawResults[i]["course_description"].(string),
+                        CoursePrice:       toFloat64(rawResults[i]["course_price"]),
+                        CourseDuration:    toInt(rawResults[i]["course_duration"]),
+                        CourseInitDate:    rawResults[i]["course_init_date"].(string),
+                        CourseState:       toBool(rawResults[i]["course_state"]),
+                        CourseCapacity:    toInt(rawResults[i]["course_capacity"]),
+                        CourseImage:       rawResults[i]["course_image"].(string),
+                        CategoryID:        parseUUID(rawResults[i]["category_id"]),
+                        Category: model.Category{
+                                CategoryName: rawResults[i]["category_name"].(string),
+                        },
+                }
+                courses = append(courses, course)
+        }</span>
+        <span class="cov6" title="34">return courses, nil</span>
+}
+
+func (c *InscriptosClient) GetMyStudents(id uuid.UUID) (model.Users, error) <span class="cov7" title="102">{
+        var rawResults []map[string]interface{}
+        err := c.Db.Raw(`
+                SELECT  U.name, U.avatar, U.id as User_id
+                FROM inscriptos I, users U
+                WHERE I.user_id = U.id AND I.course_id = ?
+        `, id).Scan(&amp;rawResults).Error
+        if err != nil </span><span class="cov6" title="34">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("STUDENTS_NOT_FOUND", "No Students found for the specified course", http.StatusNotFound)
+                }</span> else<span class="cov6" title="34"> if strings.Contains(err.Error(), "connection") </span><span class="cov0" title="0">{
+                        return nil, customError.NewError("DB_CONNECTION_ERROR", "Database connection error. Please try again later.", http.StatusInternalServerError)
+                }</span> else<span class="cov6" title="34"> {
+                        return nil, customError.NewError("UNEXPECTED_ERROR", "An unexpected error occurred. Please try again later.", http.StatusInternalServerError)
+                }</span>
+        }
+        // When using Raw+Scan, no rows does not return ErrRecordNotFound; handle explicit empty result set
+        <span class="cov7" title="68">if len(rawResults) == 0 </span><span class="cov6" title="34">{
+                return nil, customError.NewError("STUDENTS_NOT_FOUND", "No Students found for the specified course", http.StatusNotFound)
+        }</span>
+        <span class="cov6" title="34">var students model.Users
+        for i := 0; i &lt; len(rawResults); i++ </span><span class="cov6" title="34">{
+                student := model.User{
+                        Name:   rawResults[i]["name"].(string),
+                        Avatar: rawResults[i]["avatar"].(string),
+                        Id:     parseUUID(rawResults[i]["user_id"]),
+                }
+                students = append(students, student)
+        }</span>
+        <span class="cov6" title="34">return students, nil</span>
+}
+
+// MIDDLEWARE FUNC
+func (c *InscriptosClient) IsUserEnrolled(userID uuid.UUID, courseID uuid.UUID) (bool, error) <span class="cov7" title="102">{
+        var count int64
+        err := c.Db.Model(&amp;model.Inscripto{}).
+                Where("user_id = ? AND course_id = ?", userID, courseID).
+                Count(&amp;count).Error
+        if err != nil </span><span class="cov6" title="34">{
+                return false, err
+        }</span>
+        <span class="cov7" title="68">fmt.Println("Enrolled count: ", count)
+        return count &gt; 0, nil</span>
+}
+func (c *InscriptosClient) CourseExist(course_id uuid.UUID) (bool, error) <span class="cov7" title="102">{
+        var count int64
+        err := c.Db.Model(&amp;model.Course{}).
+                Where("Id = ?", course_id).
+                Count(&amp;count).Error
+        if err != nil </span><span class="cov6" title="34">{
+                return false, err
+        }</span>
+        <span class="cov7" title="68">fmt.Println("Count: ", count)
+        return count &gt; 0, nil</span>
+}
+
+// FUNCION PARA PARSEAR UUID
+func parseUUID(value interface{}) uuid.UUID <span class="cov8" title="170">{
+        if value != nil </span><span class="cov7" title="102">{
+                id, _ := uuid.Parse(value.(string))
+                return id
+        }</span>
+        <span class="cov7" title="68">return uuid.Nil</span>
+}
+
+// helpers to normalize sqlite vs postgres scan types
+func toBool(v interface{}) bool <span class="cov10" title="544">{
+        switch t := v.(type) </span>{
+        case bool:<span class="cov7" title="68">
+                return t</span>
+        case int64:<span class="cov7" title="102">
+                return t != 0</span>
+        case int:<span class="cov7" title="68">
+                return t != 0</span>
+        case float64:<span class="cov7" title="68">
+                return t != 0</span>
+        case []byte:<span class="cov7" title="68">
+                s := string(t)
+                return s == "1" || strings.EqualFold(s, "true")</span>
+        case string:<span class="cov8" title="136">
+                return t == "1" || strings.EqualFold(t, "true")</span>
+        default:<span class="cov6" title="34">
+                return false</span>
+        }
+}
+
+func toInt(v interface{}) int <span class="cov9" title="306">{
+        switch t := v.(type) </span>{
+        case int:<span class="cov6" title="34">
+                return t</span>
+        case int32:<span class="cov6" title="34">
+                return int(t)</span>
+        case int64:<span class="cov7" title="102">
+                return int(t)</span>
+        case float32:<span class="cov6" title="34">
+                return int(t)</span>
+        case float64:<span class="cov6" title="34">
+                return int(t)</span>
+        case []byte:<span class="cov6" title="34">
+                // best effort parse
+                s := string(t)
+                var n int
+                fmt.Sscanf(s, "%d", &amp;n)
+                return n</span>
+        default:<span class="cov6" title="34">
+                return 0</span>
+        }
+}
+
+func toFloat64(v interface{}) float64 <span class="cov8" title="238">{
+        switch t := v.(type) </span>{
+        case float64:<span class="cov7" title="68">
+                return t</span>
+        case float32:<span class="cov6" title="34">
+                return float64(t)</span>
+        case int:<span class="cov6" title="34">
+                return float64(t)</span>
+        case int64:<span class="cov6" title="34">
+                return float64(t)</span>
+        case []byte:<span class="cov6" title="34">
+                s := string(t)
+                var f float64
+                fmt.Sscanf(s, "%f", &amp;f)
+                return f</span>
+        default:<span class="cov6" title="34">
+                return 0</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package rating
+
+import (
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        model "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "gorm.io/gorm"
+)
+
+type RatingClient struct {
+        Db *gorm.DB
+}
+
+func NewRatingClient(db *gorm.DB) *RatingClient <span class="cov10" title="34">{
+        return &amp;RatingClient{Db: db}
+}</span>
+
+func (c *RatingClient) NewRating(rating model.Rating) (model.Rating, error) <span class="cov10" title="34">{
+        result := c.Db.Create(&amp;rating)
+
+        if result.Error != nil </span><span class="cov0" title="0">{
+                return model.Rating{}, customError.NewError("INTERNAL_SERVER_ERROR", "Error creating rating", 500)
+        }</span>
+        <span class="cov10" title="34">return rating, nil</span>
+}
+func (c *RatingClient) UpdateRating(rating model.Rating) (model.Rating, error) <span class="cov10" title="34">{
+        result := c.Db.Table("ratings").
+                Where("user_id = ? AND course_id = ?", rating.UserId, rating.CourseId).
+                Updates(&amp;rating)
+        if result.Error != nil </span><span class="cov0" title="0">{
+                return model.Rating{}, customError.NewError("INTERNAL_SERVER_ERROR", "Error updating rating", 500)
+        }</span>
+        <span class="cov10" title="34">return rating, nil</span>
+}
+func (c *RatingClient) GetRatings() (model.Ratings, error) <span class="cov10" title="34">{
+        var ratings model.Ratings
+        result := c.Db.Find(&amp;ratings)
+        if result.Error != nil </span><span class="cov0" title="0">{
+                return nil, customError.NewError("INTERNAL_SERVER_ERROR", "Error getting ratings", 500)
+        }</span>
+        <span class="cov10" title="34">return ratings, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package users
+
+import (
+        "fmt"
+
+        "errors"
+        "net/http"
+        "strings"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+        "gorm.io/gorm"
+)
+
+type UsersClient struct {
+        Db *gorm.DB
+}
+
+func NewUsersClient(db *gorm.DB) *UsersClient <span class="cov10" title="340">{
+        return &amp;UsersClient{Db: db}
+}</span>
+
+func (c *UsersClient) Create(user model.User) (model.User, error) <span class="cov7" title="68">{
+        result := c.Db.Create(&amp;user)
+        if result.Error != nil </span><span class="cov6" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "duplicate key value violates unique constraint"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DUPLICATE_IDENTIFIER",
+                                "A user with the same identifier or email already exists. Please use a different identifier or email.",
+                                http.StatusConflict)</span>
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov6" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov6" title="34">return model.User{}, err</span>
+        }
+        <span class="cov6" title="34">return user, nil</span>
+}
+
+func (c *UsersClient) FindById(id uuid.UUID) (model.User, error) <span class="cov8" title="102">{
+        var user model.User
+        err := c.Db.Where("id = ?", id).First(&amp;user).Error
+        if err != nil </span><span class="cov7" title="68">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov6" title="34">{
+                        return model.User{}, customError.NewError("NOT_FOUND", "User not found", http.StatusNotFound)
+                }</span>
+                <span class="cov6" title="34">return model.User{}, customError.NewError("DB_ERROR", "Error retrieving User from database", http.StatusInternalServerError)</span>
+        }
+        <span class="cov6" title="34">return user, nil</span>
+}
+
+func (c *UsersClient) FindByEmail(email string) (model.User, error) <span class="cov8" title="102">{
+        var user model.User
+        err := c.Db.Where("email = ?", email).First(&amp;user).Error
+        if err != nil </span><span class="cov7" title="68">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov6" title="34">{
+                        return model.User{}, customError.NewError("NOT_FOUND", "User not found", http.StatusNotFound)
+                }</span>
+                <span class="cov6" title="34">return model.User{}, customError.NewError("DB_ERROR", "Error retrieving User from database", http.StatusInternalServerError)</span>
+        }
+        <span class="cov6" title="34">fmt.Println("Result: ", user)
+        return user, nil</span>
+}
+
+func (c *UsersClient) UpdateUser(user model.User) (model.User, error) <span class="cov7" title="68">{
+        result := c.Db.Table("users").Where("id = ?", user.Id).Updates(&amp;user)
+        if result.Error != nil </span><span class="cov6" title="34">{
+                var err error
+                switch </span>{
+                case strings.Contains(result.Error.Error(), "duplicate key value violates unique constraint"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DUPLICATE_IDENTIFIER",
+                                "A user with the same identifier or email already exists. Please use a different identifier or email.",
+                                http.StatusConflict)</span>
+                case strings.Contains(result.Error.Error(), "connection"):<span class="cov0" title="0">
+                        err = customError.NewError(
+                                "DB_CONNECTION_ERROR",
+                                "Database connection error. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                default:<span class="cov6" title="34">
+                        err = customError.NewError(
+                                "UNEXPECTED_ERROR",
+                                "An unexpected error occurred. Please try again later.",
+                                http.StatusInternalServerError)</span>
+                }
+                <span class="cov6" title="34">return model.User{}, err</span>
+        }
+        <span class="cov6" title="34">return user, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package config
+
+import "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+
+import (
+        "fmt"
+
+        "gorm.io/driver/postgres"
+        "gorm.io/gorm"
+)
+
+func NewConnection(dsn string) *gorm.DB <span class="cov0" title="0">{
+        db, err := gorm.Open(postgres.Open(dsn), &amp;gorm.Config{})
+        if err != nil </span><span class="cov0" title="0">{
+                panic("failed to connect database")</span>
+        }
+
+        <span class="cov0" title="0">fmt.Println("Connection Opened to Database")
+
+        db.AutoMigrate(model.User{}, model.Course{}, model.Categories{}, model.Inscripto{}, model.Ratings{}, model.Comments{})
+
+        return db</span>
+        // defer db.Close()
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package config
+
+import (
+        "errors"
+        "os"
+
+        "github.com/joho/godotenv"
+)
+
+type Envs interface {
+        Get(key string) string
+}
+
+type envsImpl struct{}
+
+func (envsImpl) Get(key string) string <span class="cov9" title="68">{
+        return os.Getenv(key)
+}</span>
+
+// LoadEnvs loads environment variables from an optional .env file.
+// If the file is missing, it will NOT panic; environment variables
+// can be provided via the environment (e.g. docker-compose). Only
+// unexpected errors will cause a panic.
+func LoadEnvs(filename ...string) Envs <span class="cov10" title="102">{
+        err := godotenv.Load(filename...)
+        if err != nil </span><span class="cov9" title="68">{
+                // If the error is due to file not existing, ignore it.
+                if errors.Is(err, os.ErrNotExist) </span><span class="cov7" title="34">{
+                        return &amp;envsImpl{}
+                }</span>
+                // godotenv may return a wrapped *os.PathError; check string fallback
+                <span class="cov7" title="34">if pathErr, ok := err.(*os.PathError); ok </span><span class="cov7" title="34">{
+                        if errors.Is(pathErr.Err, os.ErrNotExist) </span><span class="cov0" title="0">{
+                                return &amp;envsImpl{}
+                        }</span>
+                }
+                // otherwise panic to surface unexpected errors
+                <span class="cov7" title="34">panic("Error loading .env file: " + err.Error())</span>
+        }
+        <span class="cov7" title="34">return &amp;envsImpl{}</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package auth
+
+import (
+        "fmt"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/users"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+)
+
+type AuthController struct {
+        service services.IAuthService
+}
+
+type IAuthController interface {
+        RefreshToken(c *gin.Context)
+        Login(c *gin.Context)
+}
+
+func NewAuthController(service *services.IAuthService) *AuthController <span class="cov10" title="170">{
+        return &amp;AuthController{service: *service}
+}</span>
+
+func (a *AuthController) RefreshToken(c *gin.Context) <span class="cov9" title="102">{
+        authorization := c.GetHeader("Authorization")
+
+        if authorization == "" </span><span class="cov7" title="34">{
+                err := customError.NewError("AUTHORIZATION_REQUIRED", "Authorization header is required", 400)
+                c.Error(err)
+                return
+        }</span>
+
+        <span class="cov8" title="68">authorization = authorization[7:]
+
+        user, token, err := a.service.RefreshToken(authorization)
+        if err != nil </span><span class="cov7" title="34">{
+                c.Error(err)
+                return
+        }</span>
+        <span class="cov7" title="34">c.Header("Access-Control-Allow-Origin", "*")
+        c.Header("Content-Type", "application/json")
+        c.JSON(200, gin.H{
+                "ok":      true,
+                "message": "Token refreshed",
+                "token":   token,
+                "user":    user,
+        })</span>
+}
+
+func (a *AuthController) Login(c *gin.Context) <span class="cov8" title="68">{
+        var loginDto users.LoginRequestDto
+
+        if err := c.ShouldBindJSON(&amp;loginDto); err != nil </span><span class="cov7" title="34">{
+                c.JSON(400, gin.H{"error": err.Error()})
+                return
+        }</span>
+
+        <span class="cov7" title="34">fmt.Println("LoginDTO: ", loginDto)
+
+        user, token, err := a.service.Login(loginDto)
+        if err != nil </span><span class="cov0" title="0">{
+                c.Error(err)
+                return
+        }</span>
+
+        <span class="cov7" title="34">c.JSON(200, gin.H{
+                "ok":      true,
+                "message": "User logged in",
+                "user":    user,
+                "token":   token,
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package categories
+
+import (
+        "net/http"
+
+        categoryDomain "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/categories"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+)
+
+type CategoriesController struct {
+        CategoriesService services.ICategoriesService
+}
+
+type ICategoriesController interface {
+        Create(g *gin.Context)
+}
+
+func NewCategoriesController(service services.ICategoriesService) *CategoriesController <span class="cov10" title="136">{
+        return &amp;CategoriesController{CategoriesService: service}
+}</span>
+
+func (c *CategoriesController) Create(g *gin.Context) <span class="cov8" title="68">{
+        var categoryDto categoryDomain.CreateCategoryRequestDto
+        err := g.BindJSON(&amp;categoryDto)
+        if err != nil </span><span class="cov7" title="34">{
+                g.Error(customError.NewError("INVALID_FIELDS", "Error when loading the inputs", http.StatusBadRequest))
+                return
+        }</span>
+        <span class="cov7" title="34">response, err := c.CategoriesService.CreateCategory(categoryDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov7" title="34">g.JSON(201, response)</span>
+}
+
+func (c *CategoriesController) GetAll(g *gin.Context) <span class="cov8" title="68">{
+        response, err := c.CategoriesService.FindAllCategories()
+        if err != nil </span><span class="cov7" title="34">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov7" title="34">g.JSON(200, response)</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package comments
+
+import (
+        "net/http"
+
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/comments"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+        "github.com/google/uuid"
+)
+
+type CommentsController struct {
+        CommentsService services.ICommentsService
+}
+
+func NewCommentsController(service services.ICommentsService) *CommentsController <span class="cov10" title="204">{
+        return &amp;CommentsController{CommentsService: service}
+}</span>
+
+func (c *CommentsController) NewComment(g *gin.Context) <span class="cov6" title="34">{
+        var commentDto dto.CommentRequestResponseDto
+        if err := g.BindJSON(&amp;commentDto); err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">response, err := c.CommentsService.NewComment(commentDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(201, gin.H{
+                "response": response,
+                "message":  "La comentario se registro con exito",
+        })</span>
+}
+
+func (c *CommentsController) GetCourseComments(g *gin.Context) <span class="cov8" title="102">{
+        id := g.Param("id")
+        uuid, err := uuid.Parse(id)
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_UUID", "Invalid UUID", http.StatusBadRequest))
+                return
+        }</span>
+        <span class="cov8" title="68">response, err := c.CommentsService.GetCourseComments(uuid)
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">g.JSON(200, response)</span>
+}
+func (c *CommentsController) UpdateComment(g *gin.Context) <span class="cov8" title="68">{
+        var commentDto dto.CommentRequestResponseDto
+        if err := g.ShouldBindJSON(&amp;commentDto); err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_INPUTS", "Invalid fields", http.StatusBadRequest))
+                return
+        }</span>
+        <span class="cov6" title="34">response, err := c.CommentsService.UpdateComment(commentDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, gin.H{
+                "response": response,
+                "message":  "El comentario se actualizo con exito",
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package courses
+
+import (
+        "fmt"
+        "net/http"
+
+        coursesDomain "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/courses"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+        "github.com/google/uuid"
+)
+
+type CourseController struct {
+        CourseService services.ICourseService
+}
+
+func NewCourseController(service services.ICourseService) *CourseController <span class="cov10" title="306">{
+        return &amp;CourseController{CourseService: service}
+}</span>
+
+func (c *CourseController) Create(g *gin.Context) <span class="cov6" title="34">{
+        var courseDto coursesDomain.CreateCoursesRequestDto
+        if err := g.BindJSON(&amp;courseDto); err != nil </span><span class="cov6" title="34">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov0" title="0">response, err := c.CourseService.CreateCourse(courseDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov0" title="0">g.JSON(201, gin.H{
+                "ok":      true,
+                "message": "Course created successfully",
+                "data":    response,
+        })</span>
+}
+
+func (c *CourseController) GetAll(g *gin.Context) <span class="cov7" title="68">{
+        filter := g.Query("filter")
+        response, err := c.CourseService.FindAllCourses(filter)
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, response)</span>
+}
+
+func (c *CourseController) GetById(g *gin.Context) <span class="cov7" title="68">{
+        id := g.Param("id")
+
+        uuid, err := uuid.Parse(id)
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_UUID", "Invalid UUID", http.StatusBadRequest))
+                return
+        }</span>
+
+        <span class="cov6" title="34">response, err := c.CourseService.FindOneCourse(uuid)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, response)</span>
+}
+
+func (c *CourseController) UpdateCourse(g *gin.Context) <span class="cov7" title="68">{
+        var courseDto coursesDomain.UpdateRequestDto
+        if err := g.BindJSON(&amp;courseDto); err != nil </span><span class="cov6" title="34">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">course_id, _ := g.Get("courseId")
+        courseDto.Id = parseUUID(course_id)
+        fmt.Println("UpdateCourse Controller: ", courseDto)
+        response, err := c.CourseService.UpdateCourse(courseDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, gin.H{
+                "ok":      true,
+                "message": "Course updated successfully",
+                "data":    response,
+        })</span>
+}
+
+func (c *CourseController) DeleteCourse(g *gin.Context) <span class="cov7" title="68">{
+        id := g.Param("id")
+        uuid, err := uuid.Parse(id)
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_UUID", "Invalid UUID", http.StatusBadRequest))
+                return
+        }</span>
+        <span class="cov6" title="34">err = c.CourseService.DeleteCourse(uuid)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, gin.H{
+                "ok":      true,
+                "message": "Course deleted successfully",
+        })</span>
+}
+
+// FUNCION PARA PARSEAR UUID
+func parseUUID(value interface{}) uuid.UUID <span class="cov6" title="34">{
+        if value != nil </span><span class="cov6" title="34">{
+                id, _ := uuid.Parse(value.(string))
+                return id
+        }</span>
+        <span class="cov0" title="0">return uuid.Nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package controllers
+
+import "github.com/gin-gonic/gin"
+
+type HealthController interface {
+        GetHealth(c *gin.Context)
+}
+
+type healthControllerImpl struct{}
+
+func NewHealthController() HealthController <span class="cov10" title="34">{
+        return &amp;healthControllerImpl{}
+}</span>
+
+func (h *healthControllerImpl) GetHealth(c *gin.Context) <span class="cov10" title="34">{
+        c.JSON(200, gin.H{
+                "ok":      true,
+                "status":  "UP",
+                "message": "The service is running",
+        })
+}</span>
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package inscriptions
+
+import (
+        "net/http"
+
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/inscription"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+        "github.com/google/uuid"
+)
+
+type InscriptionController struct {
+        InscriptionService services.IInscriptionService
+}
+
+func NewInscriptionController(service services.IInscriptionService) *InscriptionController <span class="cov10" title="238">{
+        return &amp;InscriptionController{InscriptionService: service}
+}</span>
+
+func (c *InscriptionController) Create(g *gin.Context) <span class="cov7" title="68">{
+        var enrollDto dto.EnrollRequestResponseDto
+
+        // Obtener userID y courseID de gin.Context y manejarlos correctamente
+        userID, exists := g.Get("userID")
+        if !exists </span><span class="cov6" title="34">{
+                g.JSON(http.StatusBadRequest, gin.H{"error": "userID is required"})
+                return
+        }</span>
+
+        <span class="cov6" title="34">courseID, exists := g.Get("courseID")
+        if !exists </span><span class="cov0" title="0">{
+                g.JSON(http.StatusBadRequest, gin.H{"error": "courseID is required"})
+                return
+        }</span>
+
+        // Verificar y convertir userID a uuid.UUID
+        <span class="cov6" title="34">var uid uuid.UUID
+        switch v := userID.(type) </span>{
+        case string:<span class="cov6" title="34">
+                parsedUID, err := uuid.Parse(v)
+                if err != nil </span><span class="cov0" title="0">{
+                        g.JSON(http.StatusBadRequest, gin.H{"error": "invalid userID format"})
+                        return
+                }</span>
+                <span class="cov6" title="34">uid = parsedUID</span>
+        case []byte:<span class="cov0" title="0">
+                parsedUID, err := uuid.ParseBytes(v)
+                if err != nil </span><span class="cov0" title="0">{
+                        g.JSON(http.StatusBadRequest, gin.H{"error": "invalid userID format"})
+                        return
+                }</span>
+                <span class="cov0" title="0">uid = parsedUID</span>
+        case uuid.UUID:<span class="cov0" title="0">
+                uid = v</span>
+        default:<span class="cov0" title="0">
+                g.JSON(http.StatusBadRequest, gin.H{"error": "invalid userID format"})
+                return</span>
+        }
+
+        // Verificar y convertir courseID a uuid.UUID
+        <span class="cov6" title="34">var cid uuid.UUID
+        switch v := courseID.(type) </span>{
+        case string:<span class="cov6" title="34">
+                parsedCID, err := uuid.Parse(v)
+                if err != nil </span><span class="cov0" title="0">{
+                        g.JSON(http.StatusBadRequest, gin.H{"error": "invalid courseID format"})
+                        return
+                }</span>
+                <span class="cov6" title="34">cid = parsedCID</span>
+        case []byte:<span class="cov0" title="0">
+                parsedCID, err := uuid.ParseBytes(v)
+                if err != nil </span><span class="cov0" title="0">{
+                        g.JSON(http.StatusBadRequest, gin.H{"error": "invalid courseID format"})
+                        return
+                }</span>
+                <span class="cov0" title="0">cid = parsedCID</span>
+        case uuid.UUID:<span class="cov0" title="0">
+                cid = v</span>
+        default:<span class="cov0" title="0">
+                g.JSON(http.StatusBadRequest, gin.H{"error": "invalid courseID format"})
+                return</span>
+        }
+
+        // Asignar valores a enrollDto
+        <span class="cov6" title="34">enrollDto.UserId = uid
+        enrollDto.CourseId = cid
+
+        // Llamar al servicio de inscripción
+        response, err := c.InscriptionService.Enroll(enrollDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+
+        // Responder con éxito
+        <span class="cov6" title="34">g.JSON(http.StatusCreated, gin.H{
+                "response": response,
+                "message":  "El usuario se registró con éxito",
+        })</span>
+}
+
+func (c *InscriptionController) GetMyCourses(g *gin.Context) <span class="cov6" title="34">{
+        userID, _ := g.Get("userID")
+        id := userID.(uuid.UUID)
+
+        response, err := c.InscriptionService.GetMyCourses(id)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">g.JSON(200, response)</span>
+}
+func (c *InscriptionController) GetMyStudents(g *gin.Context) <span class="cov7" title="68">{
+        id := g.Param("cid")
+        uuid, err := uuid.Parse(id)
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_UUID", "Invalid UUID", http.StatusBadRequest))
+                return
+        }</span>
+
+        <span class="cov6" title="34">response, err := c.InscriptionService.GetMyStudents(uuid)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">g.JSON(200, response)</span>
+}
+
+func (c *InscriptionController) IsAlredyEnrolled(g *gin.Context) <span class="cov7" title="68">{
+        cid := g.Param("cid")
+        course_id := parseUUID(cid)
+        uid, _ := g.Get("userID")
+        user_id := parseUUID(uid)
+        flag, _ := c.InscriptionService.IsUserEnrolled(user_id, course_id)
+        if flag </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("USER_ALREADY_ENROLLED", "User is already enrolled", http.StatusBadRequest))
+        }</span>
+        <span class="cov7" title="68">g.JSON(200, gin.H{"message": "User is not enrolled"})</span>
+}
+func (c *InscriptionController) CourseExist(course_id uuid.UUID) bool <span class="cov0" title="0">{
+        flag, _ := c.InscriptionService.CourseExist(course_id)
+        return flag
+}</span>
+
+// FUNCION PARA PARSEAR UUID
+func parseUUID(value interface{}) uuid.UUID <span class="cov9" title="136">{
+        if value != nil </span><span class="cov9" title="136">{
+                id, _ := uuid.Parse(value.(string))
+                return id
+        }</span>
+        <span class="cov0" title="0">return uuid.Nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package rating
+
+import (
+        "net/http"
+
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/rating"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+)
+
+type RatingController struct {
+        RatingService services.IRatingService
+}
+
+func NewRatingController(service services.IRatingService) *RatingController <span class="cov10" title="204">{
+        return &amp;RatingController{RatingService: service}
+}</span>
+
+func (c *RatingController) NewRating(g *gin.Context) <span class="cov8" title="68">{
+        var ratingDto dto.RatingRequestResponseDto
+        if err := g.ShouldBindJSON(&amp;ratingDto); err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_INPUTS", "Invalid fields", http.StatusBadRequest))
+                return
+        }</span>
+
+        <span class="cov6" title="34">response, err := c.RatingService.NewRating(ratingDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(201, gin.H{
+                "response": response,
+                "message":  "La valoracion se registro con exito",
+        })</span>
+}
+func (c *RatingController) UpdateRating(g *gin.Context) <span class="cov8" title="68">{
+        var ratingDto dto.RatingRequestResponseDto
+        if err := g.ShouldBindJSON(&amp;ratingDto); err != nil </span><span class="cov6" title="34">{
+                g.Error(customError.NewError("INVALID_INPUTS", "Invalid fields", http.StatusBadRequest))
+                return
+        }</span>
+        <span class="cov6" title="34">response, err := c.RatingService.UpdateRating(ratingDto)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, gin.H{
+                "response": response,
+                "message":  "La valoracion se actualizo con exito",
+        })</span>
+}
+func (c *RatingController) GetRatings(g *gin.Context) <span class="cov8" title="68">{
+        response, err := c.RatingService.GetRatings()
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">g.JSON(200, response)</span>
+}
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package users
+
+import (
+        "fmt"
+        "net/http"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/users"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/jwt"
+        "github.com/gin-gonic/gin"
+        "github.com/google/uuid"
+)
+
+type UsersController struct {
+        service services.IUserService
+}
+
+func NewUserController(service services.IUserService) *UsersController <span class="cov10" title="204">{
+        return &amp;UsersController{service: service}
+}</span>
+func (u *UsersController) FindByEmail(g *gin.Context) <span class="cov8" title="102">{
+        email, exists := g.Get("email")
+        if !exists </span><span class="cov6" title="34">{
+                err := customError.NewError("EMAIL_NOT_FOUND", "Email not found", http.StatusBadRequest)
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov8" title="68">response, err := u.service.GetUserByEmail(email.(string))
+        if err != nil </span><span class="cov6" title="34">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">g.JSON(200, gin.H{
+                "ok":   true,
+                "user": response,
+        })</span>
+}
+
+func (u *UsersController) CreateUser(g *gin.Context) <span class="cov6" title="34">{
+        userEmail, _ := g.Get("Email")
+
+        userName, _ := g.Get("Username")
+
+        userPassword, _ := g.Get("Password")
+
+        var user users.RegisterRequest
+        user.Email = userEmail.(string)
+        user.Username = userName.(string)
+        user.Password = userPassword.(string)
+        fmt.Println("UserRequest: ", user)
+
+        response, err := u.service.CreateUser(user)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+        <span class="cov6" title="34">token := jwt.SignDocument(response.Id, response.Role)
+        g.JSON(201, gin.H{
+                "ok":      true,
+                "message": "User created successfully",
+                "user":    response,
+                "token":   token,
+        })</span>
+}
+
+func (u *UsersController) UpdateUser(g *gin.Context) <span class="cov8" title="68">{
+        var user users.UpdateRequestDto
+        userID, _ := g.Get("userID")
+
+        user.Id = userID.(uuid.UUID)
+
+        err := g.BindJSON(&amp;user)
+        if err != nil </span><span class="cov6" title="34">{
+                err := customError.NewError("INVALID_REQUEST", "Invalid request", http.StatusBadRequest)
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">response, err := u.service.UpdateUser(user)
+        if err != nil </span><span class="cov0" title="0">{
+                g.Error(err)
+                return
+        }</span>
+
+        <span class="cov6" title="34">g.JSON(201, gin.H{
+                "ok":      true,
+                "message": "User updated successfully",
+                "data":    response,
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package errors
+
+import (
+        "fmt"
+)
+
+type Error struct {
+        Code           string
+        Message        string
+        HTTPStatusCode int
+}
+
+func (e *Error) Error() string <span class="cov10" title="34">{
+        return fmt.Sprintf("%s: %s", e.Code, e.Message)
+}</span>
+
+func NewError(code, message string, httpStatusCode int) *Error <span class="cov10" title="34">{
+        return &amp;Error{
+                Code:           code,
+                Message:        message,
+                HTTPStatusCode: httpStatusCode,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package middlewares
+
+import (
+        "net/http"
+
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/gin-gonic/gin"
+)
+
+func ErrorHandler() gin.HandlerFunc <span class="cov10" title="68">{
+        return func(c *gin.Context) </span><span class="cov10" title="68">{
+                c.Next()
+
+                if len(c.Errors) &gt; 0 </span><span class="cov10" title="68">{
+                        err := c.Errors.Last().Err
+
+                        switch e := err.(type) </span>{
+                        case *customError.Error:<span class="cov8" title="34">
+                                c.JSON(e.HTTPStatusCode, gin.H{"error": e.Error()})</span>
+                        default:<span class="cov8" title="34">
+                                c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})</span>
+                        }
+                }
+        }
+}
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">package admin
+
+import (
+        "fmt"
+        "net/http"
+        "strings"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/config"
+        utilsJWT "github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/jwt"
+        "github.com/gin-gonic/gin"
+        jwt "github.com/golang-jwt/jwt"
+)
+
+// AuthMiddleware verifica el token JWT y el rol del usuario
+func AdminAuthMiddleware() gin.HandlerFunc <span class="cov9" title="170">{
+        return func(c *gin.Context) </span><span class="cov10" title="204">{
+                authHeader := c.GetHeader("Authorization")
+                fmt.Println("auth:", authHeader)
+                if authHeader == "" </span><span class="cov6" title="34">{
+                        c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov9" title="170">tokenParts := strings.Split(authHeader, "Bearer ")
+                if len(tokenParts) != 2 </span><span class="cov6" title="34">{
+                        c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization token required"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov9" title="136">tokenString := tokenParts[1]
+
+                claims := &amp;utilsJWT.CustomClaims{}
+                envs := config.LoadEnvs(".env")
+                secret := []byte(envs.Get("JWT_SECRET"))
+
+                token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) </span><span class="cov8" title="102">{
+                        return secret, nil
+                }</span>)
+
+                <span class="cov9" title="136">if err != nil </span><span class="cov6" title="34">{
+                        c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov8" title="102">if !token.Valid </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov8" title="102">if claims.Role == 0 </span><span class="cov6" title="34">{
+                        c.JSON(http.StatusForbidden, gin.H{"error": "You don't have permission to access this resource"})
+                        c.Abort()
+                        return
+                }</span>
+
+                //c.Set("userID", claims.Id)
+                <span class="cov8" title="68">c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file27" style="display: none">package course
+
+import "github.com/gin-gonic/gin"
+
+func CheckCourseId() gin.HandlerFunc <span class="cov10" title="68">{
+        return func(c *gin.Context) </span><span class="cov10" title="68">{
+
+                courseId := c.Param("id")
+                if courseId == "" </span><span class="cov8" title="34">{
+                        c.JSON(400, gin.H{"error": "Course ID is required"})
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov8" title="34">c.Set("courseId", courseId)
+                c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file28" style="display: none">package enroll
+
+import (
+        "fmt"
+
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/inscription"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+        "github.com/google/uuid"
+)
+
+func CourseExist(service services.IInscriptionService) gin.HandlerFunc <span class="cov10" title="136">{
+        return func(c *gin.Context) </span><span class="cov10" title="136">{
+                var courseRequestString dto.CourseIdString
+                err := c.BindJSON(&amp;courseRequestString)
+                if err != nil </span><span class="cov7" title="34">{
+                        fmt.Println("Error al pasar el UUID")
+                        c.JSON(400, gin.H{"error": "Invalid request format"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov9" title="102">course_id, err := uuid.Parse(courseRequestString.CourseId)
+                if err != nil </span><span class="cov7" title="34">{
+                        fmt.Println("Error al parsear el UUID")
+                        c.JSON(400, gin.H{"error": "Invalid UUID format"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov8" title="68">exist, err := service.CourseExist(course_id)
+                if !exist </span><span class="cov7" title="34">{
+                        c.JSON(400, gin.H{"error": "Course doesn't exist"})
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov7" title="34">if err != nil </span><span class="cov0" title="0">{
+                        c.Error(err)
+                }</span>
+                <span class="cov7" title="34">c.Set("courseID", courseRequestString.CourseId)
+                fmt.Println("Paso el Exist middleware")
+                c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file29" style="display: none">package enroll
+
+import (
+        "fmt"
+        "net/http"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+        "github.com/google/uuid"
+)
+
+func IsAlredyEnroll(service services.IInscriptionService) gin.HandlerFunc <span class="cov10" title="170">{
+        return func(c *gin.Context) </span><span class="cov10" title="170">{
+                fmt.Println("IsAlredyEnroll middleware")
+                userID, exists := c.Get("userID")
+                if !exists </span><span class="cov7" title="34">{
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": "User ID not found"})
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov9" title="136">uid := userID.(uuid.UUID)
+                fmt.Println("user_id: ", uid)
+
+                courseID, exists := c.Get("courseID")
+                if !exists </span><span class="cov7" title="34">{
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": "Course ID not found"})
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov9" title="102">cid, err := uuid.Parse(courseID.(string))
+                if err != nil </span><span class="cov7" title="34">{
+                        c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid Course ID"})
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov8" title="68">existEnrrol, err := service.IsUserEnrolled(uid, cid)
+                if existEnrrol </span><span class="cov7" title="34">{
+                        c.JSON(400, gin.H{"error": "User is already enrolled"})
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov7" title="34">fmt.Println("Paso alredyEnrolled middleware")
+                c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file30" style="display: none">package user
+
+import (
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+
+        "github.com/gin-gonic/gin"
+)
+
+func IsEmailAvailable(service services.IUserService) gin.HandlerFunc <span class="cov10" title="68">{
+        return func(c *gin.Context) </span><span class="cov10" title="68">{
+                email := c.GetString("Email")
+                _, err := service.GetUserByEmail(email)
+                if err == nil </span><span class="cov8" title="34">{
+                        // email already exists -&gt; return a proper error (avoid nil error panic)
+                        c.Error(customError.NewError("EMAIL_TAKEN", "Email already registered", 409))
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov8" title="34">c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file31" style="display: none">package user
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/users"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+
+        "github.com/gin-gonic/gin"
+)
+
+func RegisterInputCheckMiddleware() gin.HandlerFunc <span class="cov10" title="102">{
+        return func(c *gin.Context) </span><span class="cov10" title="102">{
+                var user users.RegisterRequest
+                err := c.BindJSON(&amp;user)
+                if err != nil </span><span class="cov7" title="34">{
+                        err := customError.NewError("INVALID_REQUEST", "Invalid request", 400)
+                        c.Error(err)
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov9" title="68">if user.Password == "" || user.Email == "" || user.Username == "" </span><span class="cov7" title="34">{
+                        err := customError.NewError("INVALID_REQUEST", "Invalid request", 400)
+                        c.Error(err)
+                        c.Abort()
+                        return
+                }</span>
+                <span class="cov7" title="34">c.Set("Username", user.Username)
+                c.Set("Email", user.Email)
+                c.Set("Password", user.Password)
+                c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file32" style="display: none">package user
+
+import (
+        "fmt"
+        "strings"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/config"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        utilsJWT "github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/jwt"
+        "github.com/gin-gonic/gin"
+        jwt "github.com/golang-jwt/jwt"
+)
+
+// AuthMiddleware verifica el token JWT
+func AuthMiddleware() gin.HandlerFunc <span class="cov10" title="102">{
+        return func(c *gin.Context) </span><span class="cov10" title="102">{
+                authHeader := c.GetHeader("Authorization")
+                fmt.Println("auth:", authHeader)
+                if authHeader == "" </span><span class="cov7" title="34">{
+                        err := customError.NewError("AUTHORIZATION_REQUIRED", "Authorization header is required", 400)
+                        c.Error(err)
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov9" title="68">tokenParts := strings.Split(authHeader, "Bearer ")
+                if len(tokenParts) != 2 </span><span class="cov7" title="34">{
+                        err := customError.NewError("INVALID_TOKEN", "Invalid token", 400)
+                        c.Error(err)
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov7" title="34">tokenString := tokenParts[1]
+
+                claims := &amp;utilsJWT.CustomClaims{}
+                envs := config.LoadEnvs(".env")
+                secret := []byte(envs.Get("JWT_SECRET"))
+
+                token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) </span><span class="cov7" title="34">{
+                        return secret, nil
+                }</span>)
+
+                <span class="cov7" title="34">if err != nil </span><span class="cov0" title="0">{
+                        err := customError.NewError("INVALID_TOKEN", "Invalid token", 400)
+                        c.Error(err)
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov7" title="34">if !token.Valid </span><span class="cov0" title="0">{
+                        err := customError.NewError("INVALID_TOKEN", "Invalid token", 400)
+                        c.Error(err)
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov7" title="34">c.Set("userID", claims.Id)
+                c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file33" style="display: none">package model
+
+import (
+        "github.com/google/uuid"
+        "gorm.io/gorm"
+)
+
+type Category struct {
+        gorm.Model
+        Id           uuid.UUID `sql:"type:uuid;primary_key;default:gen_random_uuid()"`
+        CategoryName string    `gorm:"category_name"`
+}
+
+func (model *Category) BeforeCreate(tx *gorm.DB) (err error) <span class="cov0" title="0">{
+        model.Id = uuid.New()
+        return
+}</span>
+
+type Categories []Category
+</pre>
+		
+		<pre class="file" id="file34" style="display: none">package model
+
+import (
+        "github.com/google/uuid"
+        "gorm.io/gorm"
+)
+
+type Course struct {
+        gorm.Model
+        Id                uuid.UUID `sql:"type:uuid;primary_key;default:gen_random_uuid()"`
+        CourseName        string    `gorm:"course_name;unique"`
+        CourseDescription string    `gorm:"description"`
+        CoursePrice       float64   `gorm:"price"`
+        CourseDuration    int       `gorm:"duration"`
+        CourseInitDate    string    `gorm:"init_date"`
+        CourseState       bool      `gorm:"state;default:false"`
+        CourseCapacity    int       `gorm:"cupo;default:15"`
+        CourseImage       string    `gorm:"image;default:https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png"`
+        CategoryID        uuid.UUID
+        Category          Category `gorm:"foreignKey:CategoryID"`
+        Ratings           Ratings  `gorm:"foreignKey:CourseId"`
+        RatingAvg         float64  `gorm:"-" json:"ratingavg"`
+}
+
+func (model *Course) BeforeCreate(tx *gorm.DB) (err error) <span class="cov0" title="0">{
+        model.Id = uuid.New()
+        return
+}</span>
+
+type Courses []Course
+</pre>
+		
+		<pre class="file" id="file35" style="display: none">package model
+
+import (
+        "github.com/google/uuid"
+        "gorm.io/gorm"
+)
+
+type User struct {
+        gorm.Model
+        Id       uuid.UUID `sql:"type:uuid;primary_key;default:gen_random_uuid()"`
+        Password string    `gorm:"password"`
+        Email    string    `gorm:"email;unique"`
+        Role     int       `gorm:"role;default:0"`
+        Name     string    `gorm:"user_name"`
+        Avatar   string    `gorm:"avatar;default:https://i.postimg.cc/wTgNFWhR/profile.png"`
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) <span class="cov0" title="0">{
+        u.Id = uuid.New()
+        return
+}</span>
+
+type Users []User
+</pre>
+		
+		<pre class="file" id="file36" style="display: none">package routes
+
+import (
+        controller "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/auth"
+        "github.com/gin-gonic/gin"
+)
+
+func AuthRoutes(engine *gin.Engine, controller *controller.AuthController) <span class="cov10" title="68">{
+        engine.POST("/auth/refresh-token", controller.RefreshToken)
+        engine.POST("/auth/login", controller.Login)
+}</span>
+</pre>
+		
+		<pre class="file" id="file37" style="display: none">package routes
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/categories"
+        "github.com/gin-gonic/gin"
+)
+
+func CategoriesRoutes(engine *gin.Engine, controller *categories.CategoriesController) <span class="cov10" title="68">{
+        engine.POST("/category/create", controller.Create)
+        engine.GET("/categories", controller.GetAll)
+}</span>
+</pre>
+		
+		<pre class="file" id="file38" style="display: none">package routes
+
+import (
+        controller "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/comments"
+        "github.com/gin-gonic/gin"
+)
+
+func CommentsRoutes(g *gin.Engine, controller *controller.CommentsController) <span class="cov10" title="34">{
+        g.POST("/comment", controller.NewComment)
+        g.GET("/comment/:id", controller.GetCourseComments)
+        g.PUT("/comment", controller.UpdateComment)
+}</span>
+</pre>
+		
+		<pre class="file" id="file39" style="display: none">package routes
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/courses"
+        middlewareAdmin "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/admin"
+        middlewareCourse "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/course"
+        "github.com/gin-gonic/gin"
+)
+
+func CoursesRoutes(g *gin.Engine, controller *courses.CourseController) <span class="cov10" title="34">{
+
+        g.POST("/courses/create",
+                middlewareAdmin.AdminAuthMiddleware(),
+                controller.Create)
+        g.GET("/courses", controller.GetAll)
+        g.PUT("/courses/update/:id",
+                middlewareCourse.CheckCourseId(),
+                middlewareAdmin.AdminAuthMiddleware(),
+                controller.UpdateCourse)
+        g.GET("/courses/:id", controller.GetById)
+        g.DELETE("/courses/:id",
+                middlewareAdmin.AdminAuthMiddleware(),
+                controller.DeleteCourse)
+}</span>
+</pre>
+		
+		<pre class="file" id="file40" style="display: none">package routes
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers"
+        "github.com/gin-gonic/gin"
+)
+
+func HealthRoutes(engine *gin.RouterGroup) <span class="cov10" title="68">{
+        healthController := controllers.NewHealthController()
+
+        engine.GET("/health", healthController.GetHealth)
+}</span>
+</pre>
+		
+		<pre class="file" id="file41" style="display: none">package routes
+
+import (
+        controller "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/inscriptions"
+        isAdmin "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/admin"
+        enroll "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/enroll"
+        isLogged "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/user"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+)
+
+func InscriptionsRoutes(g *gin.Engine, controller *controller.InscriptionController, service services.IInscriptionService) <span class="cov10" title="34">{
+
+        g.POST("/enroll",
+                isLogged.AuthMiddleware(),
+                enroll.CourseExist(service),
+                enroll.IsAlredyEnroll(service),
+                controller.Create)
+
+        g.GET("/myCourses/",
+                isLogged.AuthMiddleware(),
+                controller.GetMyCourses)
+
+        g.GET("/studentsInThisCourse/:cid",
+                isAdmin.AdminAuthMiddleware(),
+                controller.GetMyStudents)
+
+        g.GET("/isEnrolled/:cid",
+                isLogged.AuthMiddleware(),
+                controller.IsAlredyEnrolled)
+}</span>
+</pre>
+		
+		<pre class="file" id="file42" style="display: none">package routes
+
+import (
+        controller "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/rating"
+        "github.com/gin-gonic/gin"
+)
+
+func RatingRoutes(g *gin.Engine, controller *controller.RatingController) <span class="cov10" title="34">{
+        g.POST("/rating", controller.NewRating)
+        g.PUT("/rating", controller.UpdateRating)
+        g.GET("/rating", controller.GetRatings)
+}</span>
+</pre>
+		
+		<pre class="file" id="file43" style="display: none">package routes
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/adapter"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/gin-gonic/gin"
+        "gorm.io/gorm"
+)
+
+// AppRoutes es la función que se encarga de definir las rutas de la aplicación
+func AppRoutes(engine *gin.Engine, db *gorm.DB) <span class="cov10" title="34">{
+        // Registrar rutas de health para checks simples
+        HealthRoutes(engine.Group("/"))
+        InscriptionController, InscriptionService := adapter.InscriptionsAdapter(db)
+        UserController, UserService := adapter.UserAdapter(db)
+
+        CoursesRoutes(engine, adapter.CourseAdapter(db))
+        CategoriesRoutes(engine, adapter.CategoryAdapter(db))
+        UsersRoutes(engine, UserController, UserService)
+        AuthRoutes(engine, adapter.AuthAdapter(db))
+        InscriptionsRoutes(engine, InscriptionController, InscriptionService)
+        RatingRoutes(engine, adapter.RatingAdapter(db))
+        CommentsRoutes(engine, adapter.CommentAdapter(db))
+
+        engine.NoRoute(func(c *gin.Context) </span><span class="cov10" title="34">{
+                c.Error(errors.NewError("NOT_FOUND", "Route not found", 404))
+        }</span>)
+}
+</pre>
+		
+		<pre class="file" id="file44" style="display: none">package routes
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/controllers/users"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/middleware/user"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/services"
+        "github.com/gin-gonic/gin"
+)
+
+func UsersRoutes(engine *gin.Engine, controller *users.UsersController, service services.IUserService) <span class="cov10" title="34">{
+        engine.POST("/users/register",
+                user.RegisterInputCheckMiddleware(),
+                user.IsEmailAvailable(service),
+                controller.CreateUser)
+
+        engine.PUT("/users/update", user.AuthMiddleware(), controller.UpdateUser)
+}</span>
+</pre>
+		
+		<pre class="file" id="file45" style="display: none">package services
+
+import (
+        "fmt"
+
+        client "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/users"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/users"
+        customError "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/errors"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/bcrypt"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/jwt"
+        "github.com/google/uuid"
+)
+
+type AuthService struct {
+        userService IUserService
+        client      client.UsersClient
+}
+
+type IAuthService interface {
+        RefreshToken(token string) (users.GetUserDto, string, error)
+        Login(loginDto users.LoginRequestDto) (users.GetUserDto, string, error)
+}
+
+func NewAuthService(userService *IUserService, client *client.UsersClient) IAuthService <span class="cov10" title="204">{
+        return &amp;AuthService{
+                userService: *userService,
+                client:      *client,
+        }
+}</span>
+
+func (a *AuthService) RefreshToken(token string) (users.GetUserDto, string, error) <span class="cov8" title="102">{
+        claims, err := jwt.VerifyToken(token)
+        if err != nil </span><span class="cov6" title="34">{
+                return users.GetUserDto{}, "", customError.NewError("INVALID TOKEN", "Invalid token", 401)
+        }</span>
+
+        <span class="cov8" title="68">fmt.Println(claims)
+        id, err := uuid.Parse(claims["id"].(string))
+        if err != nil </span><span class="cov0" title="0">{
+                return users.GetUserDto{}, "", customError.NewError("INVALID ID", "Invalid ID", 401)
+        }</span>
+
+        <span class="cov8" title="68">roleInterface := claims["role"].(float64)
+        role := int(roleInterface)
+
+        checkUser, err := a.userService.GetUserById(id)
+        if err != nil </span><span class="cov6" title="34">{
+                return users.GetUserDto{}, "", err
+        }</span>
+
+        <span class="cov6" title="34">if checkUser.Id == uuid.Nil </span><span class="cov0" title="0">{
+                return users.GetUserDto{}, "", customError.NewError("USER NOT FOUND", "User not found", 404)
+        }</span>
+
+        <span class="cov6" title="34">newToken := jwt.SignDocument(id, role)
+
+        return checkUser, newToken, nil</span>
+}
+
+func (a *AuthService) Login(loginDto users.LoginRequestDto) (users.GetUserDto, string, error) <span class="cov8" title="102">{
+        var userDto users.GetUserDto
+        user, err := a.client.FindByEmail(loginDto.Email)
+        if err != nil </span><span class="cov6" title="34">{
+                return users.GetUserDto{}, "", err
+        }</span>
+
+        <span class="cov8" title="68">if !bcrypt.ComparePassword(loginDto.Password, user.Password) </span><span class="cov6" title="34">{
+                return users.GetUserDto{}, "", customError.NewError("INVALID CREDENTIALS", "Invalid credentials", 401)
+        }</span>
+
+        <span class="cov6" title="34">newToken := jwt.SignDocument(user.Id, user.Role)
+
+        userDto = users.GetUserDto{
+                Id:       user.Id,
+                Email:    user.Email,
+                Role:     user.Role,
+                UserName: user.Name,
+                Avatar:   user.Avatar,
+        }
+
+        return userDto, newToken, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file46" style="display: none">package services
+
+import (
+        categoriesClient "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/categories"
+        categoriesDto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/categories"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+)
+
+type ICategoriesService interface {
+        CreateCategory(categoryDto categoriesDto.CreateCategoryRequestDto) (categoriesDto.CreateCategoryResponseDto, error)
+        FindAllCategories() (categoriesDto.GetAllCategories, error)
+}
+
+type categoriesService struct {
+        client categoriesClient.CategoriesClient
+}
+
+func NewCategoriesService(client *categoriesClient.CategoriesClient) ICategoriesService <span class="cov10" title="34">{
+        return &amp;categoriesService{client: *client}
+}</span>
+
+func (c *categoriesService) CreateCategory(categoryDto categoriesDto.CreateCategoryRequestDto) (categoriesDto.CreateCategoryResponseDto, error) <span class="cov10" title="34">{
+        var newCategory = model.Category{
+                CategoryName: categoryDto.CategoryName,
+        }
+
+        createdCategory, err := c.client.Create(newCategory)
+        if err != nil </span><span class="cov0" title="0">{
+                return categoriesDto.CreateCategoryResponseDto{}, err
+        }</span>
+
+        <span class="cov10" title="34">return categoriesDto.CreateCategoryResponseDto{
+                CategoryId:   createdCategory.Id,
+                CategoryName: createdCategory.CategoryName,
+        }, nil</span>
+}
+func (c *categoriesService) FindAllCategories() (categoriesDto.GetAllCategories, error) <span class="cov10" title="34">{
+        categories, err := c.client.GetAll()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov10" title="34">var allCartegoriesDto categoriesDto.GetAllCategories
+        for _, result := range categories </span><span class="cov10" title="34">{
+                var categoryDto categoriesDto.GetAllCategoriesResponseDto
+                categoryDto.CategoryId = result.Id
+                categoryDto.CategoryName = result.CategoryName
+                allCartegoriesDto = append(allCartegoriesDto, categoryDto)
+        }</span>
+        <span class="cov10" title="34">return allCartegoriesDto, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file47" style="display: none">package services
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/comments"
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/comments"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+)
+
+type ICommentsService interface {
+        NewComment(dto dto.CommentRequestResponseDto) (dto.CommentRequestResponseDto, error)
+        GetCourseComments(courseID uuid.UUID) (dto.GetCommentsResponse, error)
+        UpdateComment(dto dto.CommentRequestResponseDto) (dto.CommentRequestResponseDto, error)
+}
+
+type commentsService struct {
+        client comments.CommentsClient
+}
+
+func NewCommentsService(client *comments.CommentsClient) ICommentsService <span class="cov10" title="34">{
+        return &amp;commentsService{client: *client}
+}</span>
+
+func (c *commentsService) NewComment(data dto.CommentRequestResponseDto) (dto.CommentRequestResponseDto, error) <span class="cov10" title="34">{
+        var NewComment = model.Comment{
+                CourseId: data.CourseId,
+                UserId:   data.UserId,
+                Text:     data.Text,
+        }
+
+        coment, err := c.client.NewComment(NewComment)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.CommentRequestResponseDto{}, err
+        }</span>
+
+        <span class="cov10" title="34">return dto.CommentRequestResponseDto{
+                CourseId: coment.CourseId,
+                UserId:   coment.UserId,
+                Text:     coment.Text,
+        }, nil</span>
+}
+
+func (c *commentsService) GetCourseComments(courseID uuid.UUID) (dto.GetCommentsResponse, error) <span class="cov10" title="34">{
+        comments, err := c.client.GetCourseComments(courseID)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.GetCommentsResponse{}, err
+        }</span>
+        <span class="cov10" title="34">var allCommentsDto dto.GetCommentsResponse
+        for _, result := range comments </span><span class="cov10" title="34">{
+                var commentDto dto.CommentResponse
+                commentDto.User_name = result.UserName
+                commentDto.Text = result.Text
+                commentDto.User_avatar = result.UserAvatar
+                commentDto.User_id = result.UserId
+                allCommentsDto = append(allCommentsDto, commentDto)
+        }</span>
+        <span class="cov10" title="34">return allCommentsDto, nil</span>
+
+}
+func (c *commentsService) UpdateComment(commentDto dto.CommentRequestResponseDto) (dto.CommentRequestResponseDto, error) <span class="cov10" title="34">{
+        var comment = model.Comment{
+                CourseId: commentDto.CourseId,
+                UserId:   commentDto.UserId,
+                Text:     commentDto.Text,
+        }
+        commentUpdated, err := c.client.UpdateComment(comment)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.CommentRequestResponseDto{}, err
+        }</span>
+        <span class="cov10" title="34">return dto.CommentRequestResponseDto{
+                CourseId: commentUpdated.CourseId,
+                UserId:   commentUpdated.UserId,
+                Text:     commentUpdated.Text,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file48" style="display: none">package services
+
+import (
+        "fmt"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/courses"
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/courses"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+)
+
+type ICourseService interface {
+        CreateCourse(courseDto dto.CreateCoursesRequestDto) (dto.CreateCoursesResponseDto, error)
+        FindAllCourses(filter string) (dto.GetAllCourses, error)
+        FindOneCourse(id uuid.UUID) (dto.GetCourseDto, error)
+        UpdateCourse(dto dto.UpdateRequestDto) (dto.UpdateResponseDto, error)
+        DeleteCourse(id uuid.UUID) error
+}
+
+type courseService struct {
+        client courses.CourseClient
+}
+
+func NewCourseService(client *courses.CourseClient) ICourseService <span class="cov10" title="34">{
+        return &amp;courseService{client: *client}
+}</span>
+
+func (c *courseService) CreateCourse(courseDto dto.CreateCoursesRequestDto) (dto.CreateCoursesResponseDto, error) <span class="cov10" title="34">{
+
+        var newCourse = model.Course{
+                CourseName:        courseDto.CourseName,
+                CourseDescription: courseDto.CourseDescription,
+                CoursePrice:       courseDto.CoursePrice,
+                CourseDuration:    courseDto.CourseDuration,
+                CourseCapacity:    courseDto.CourseCapacity,
+                CategoryID:        courseDto.CategoryID,
+                CourseInitDate:    courseDto.CourseInitDate,
+                CourseState:       courseDto.CourseState,
+                CourseImage:       courseDto.CourseImage,
+        }
+
+        createdCourse, err := c.client.Create(newCourse)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.CreateCoursesResponseDto{}, err
+        }</span>
+
+        <span class="cov10" title="34">return dto.CreateCoursesResponseDto{
+                CourseName: createdCourse.CourseName,
+                CourseId:   createdCourse.Id,
+        }, nil</span>
+}
+
+func (c *courseService) FindAllCourses(filter string) (dto.GetAllCourses, error) <span class="cov0" title="0">{
+        courses, err := c.client.GetAll(filter)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">var allCoursesDto dto.GetAllCourses
+        for _, result := range courses </span><span class="cov0" title="0">{
+                var courseDto dto.GetCourseDto
+                courseDto.Id = result.Id
+                courseDto.CategoryID = result.CategoryID
+                courseDto.CourseName = result.CourseName
+                courseDto.CourseDescription = result.CourseDescription
+                courseDto.CoursePrice = result.CoursePrice
+                courseDto.CourseDuration = result.CourseDuration
+                courseDto.CourseCapacity = result.CourseCapacity
+                courseDto.CourseInitDate = result.CourseInitDate
+                courseDto.CourseState = result.CourseState
+                courseDto.CourseImage = result.CourseImage
+                courseDto.CourseCategoryName = result.Category.CategoryName
+                courseDto.RatingAvg = result.RatingAvg
+                allCoursesDto = append(allCoursesDto, courseDto)
+        }</span>
+        <span class="cov0" title="0">return allCoursesDto, nil</span>
+}
+
+func (c *courseService) FindOneCourse(id uuid.UUID) (dto.GetCourseDto, error) <span class="cov0" title="0">{
+        result, err := c.client.GetById(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.GetCourseDto{}, err
+        }</span>
+        <span class="cov0" title="0">return dto.GetCourseDto{
+                Id:                 result.Id,
+                CategoryID:         result.CategoryID,
+                CourseName:         result.CourseName,
+                CourseDescription:  result.CourseDescription,
+                CoursePrice:        result.CoursePrice,
+                CourseDuration:     result.CourseDuration,
+                CourseCapacity:     result.CourseCapacity,
+                CourseInitDate:     result.CourseInitDate,
+                CourseState:        result.CourseState,
+                CourseImage:        result.CourseImage,
+                CourseCategoryName: result.Category.CategoryName,
+                RatingAvg:          result.RatingAvg,
+        }, nil</span>
+}
+
+func (c *courseService) UpdateCourse(newData dto.UpdateRequestDto) (dto.UpdateResponseDto, error) <span class="cov10" title="34">{
+        var course model.Course
+        if newData.CourseName != nil </span><span class="cov10" title="34">{
+                course.CourseName = *newData.CourseName
+        }</span>
+        <span class="cov10" title="34">if newData.CourseDescription != nil </span><span class="cov0" title="0">{
+                course.CourseDescription = *newData.CourseDescription
+        }</span>
+        <span class="cov10" title="34">if newData.CoursePrice != nil </span><span class="cov10" title="34">{
+                course.CoursePrice = *newData.CoursePrice
+        }</span>
+        <span class="cov10" title="34">if newData.CourseDuration != nil </span><span class="cov0" title="0">{
+                course.CourseDuration = *newData.CourseDuration
+        }</span>
+        <span class="cov10" title="34">if newData.CourseCapacity != nil </span><span class="cov0" title="0">{
+                course.CourseCapacity = *newData.CourseCapacity
+        }</span>
+        <span class="cov10" title="34">if newData.CategoryID != nil </span><span class="cov0" title="0">{
+                course.CategoryID = *newData.CategoryID
+        }</span>
+        <span class="cov10" title="34">if newData.CourseInitDate != nil </span><span class="cov0" title="0">{
+                course.CourseInitDate = *newData.CourseInitDate
+        }</span>
+        <span class="cov10" title="34">if newData.CourseState != nil </span><span class="cov0" title="0">{
+                course.CourseState = *newData.CourseState
+        }</span>
+        <span class="cov10" title="34">if newData.CourseImage != nil </span><span class="cov0" title="0">{
+                course.CourseImage = *newData.CourseImage
+        }</span>
+        <span class="cov10" title="34">course.Id = newData.Id
+
+        fmt.Println("UpdateCourse Service: ", course)
+
+        result, err := c.client.UpdateCourse(course)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.UpdateResponseDto{}, err
+        }</span>
+        <span class="cov10" title="34">return dto.UpdateResponseDto{
+                Id:                result.Id,
+                CategoryID:        result.CategoryID,
+                CourseName:        result.CourseName,
+                CourseDescription: result.CourseDescription,
+                CoursePrice:       result.CoursePrice,
+                CourseDuration:    result.CourseDuration,
+                CourseCapacity:    result.CourseCapacity,
+                CourseInitDate:    result.CourseInitDate,
+                CourseState:       result.CourseState,
+                CourseImage:       result.CourseImage,
+        }, nil</span>
+}
+
+func (c *courseService) DeleteCourse(id uuid.UUID) error <span class="cov10" title="34">{
+        err := c.client.DeleteCourse(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov10" title="34">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file49" style="display: none">package services
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/inscriptos"
+        courseDto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/courses"
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/inscription"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/google/uuid"
+)
+
+type IInscriptionService interface {
+        Enroll(dto.EnrollRequestResponseDto) (dto.EnrollRequestResponseDto, error)
+        GetMyCourses(uuid.UUID) (courseDto.GetAllCourses, error)
+        GetMyStudents(uuid.UUID) (dto.StudentsInCourse, error)
+        IsUserEnrolled(userID uuid.UUID, courseID uuid.UUID) (bool, error)
+        CourseExist(course_id uuid.UUID) (bool, error)
+}
+
+type inscriptionService struct {
+        client inscriptos.InscriptosClient
+}
+
+func NewInscriptionService(client *inscriptos.InscriptosClient) IInscriptionService <span class="cov8" title="34">{
+        return &amp;inscriptionService{client: *client}
+}</span>
+
+func (c *inscriptionService) Enroll(data dto.EnrollRequestResponseDto) (dto.EnrollRequestResponseDto, error) <span class="cov8" title="34">{
+        var newEnroll = model.Inscripto{
+                CourseId: data.CourseId,
+                UserId:   data.UserId,
+        }
+        enroll, err := c.client.Enroll(newEnroll)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.EnrollRequestResponseDto{}, err
+        }</span>
+        <span class="cov8" title="34">return dto.EnrollRequestResponseDto{
+                CourseId: enroll.CourseId,
+                UserId:   enroll.UserId,
+        }, nil</span>
+}
+
+func (c *inscriptionService) GetMyCourses(id uuid.UUID) (courseDto.GetAllCourses, error) <span class="cov0" title="0">{
+        response, err := c.client.GetMyCourses(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">var courses courseDto.GetAllCourses
+        for _, data := range response </span><span class="cov0" title="0">{
+                course := courseDto.GetCourseDto{
+                        Id:                 data.Id,
+                        CategoryID:         data.CategoryID,
+                        CourseName:         data.CourseName,
+                        CourseDescription:  data.CourseDescription,
+                        CoursePrice:        data.CoursePrice,
+                        CourseDuration:     data.CourseDuration,
+                        CourseCapacity:     data.CourseCapacity,
+                        CourseInitDate:     data.CourseInitDate,
+                        CourseState:        data.CourseState,
+                        CourseImage:        data.CourseImage,
+                        CourseCategoryName: data.Category.CategoryName,
+                }
+                courses = append(courses, course)
+        }</span>
+        <span class="cov0" title="0">return courses, nil</span>
+}
+func (c *inscriptionService) GetMyStudents(id uuid.UUID) (dto.StudentsInCourse, error) <span class="cov8" title="34">{
+        response, err := c.client.GetMyStudents(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="34">var students dto.StudentsInCourse
+        for _, data := range response </span><span class="cov8" title="34">{
+                studentDto := dto.Student{
+                        UserId:   data.Id,
+                        UserName: data.Name,
+                        Avatar:   data.Avatar,
+                }
+                students = append(students, studentDto)
+        }</span>
+        <span class="cov8" title="34">return students, nil</span>
+}
+
+func (c *inscriptionService) IsUserEnrolled(userID uuid.UUID, courseID uuid.UUID) (bool, error) <span class="cov8" title="34">{
+        return c.client.IsUserEnrolled(userID, courseID)
+}</span>
+func (c *inscriptionService) CourseExist(course_id uuid.UUID) (bool, error) <span class="cov10" title="68">{
+        return c.client.CourseExist(course_id)
+}</span>
+</pre>
+		
+		<pre class="file" id="file50" style="display: none">package services
+
+import (
+        rating "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/rating"
+        dto "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/rating"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+)
+
+type IRatingService interface {
+        NewRating(dto dto.RatingRequestResponseDto) (dto.RatingRequestResponseDto, error)
+        UpdateRating(dto dto.RatingRequestResponseDto) (dto.RatingRequestResponseDto, error)
+        GetRatings() (dto.RatingsResponse, error)
+}
+
+type ratingService struct {
+        client rating.RatingClient
+}
+
+func NewRatingService(client *rating.RatingClient) IRatingService <span class="cov10" title="34">{
+        return &amp;ratingService{client: *client}
+}</span>
+
+func (r *ratingService) NewRating(data dto.RatingRequestResponseDto) (dto.RatingRequestResponseDto, error) <span class="cov10" title="34">{
+        var NewRating = model.Rating{
+                CourseId: data.CourseId,
+                UserId:   data.UserId,
+                Rating:   data.Rating,
+        }
+
+        rating, err := r.client.NewRating(NewRating)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.RatingRequestResponseDto{}, err
+        }</span>
+
+        <span class="cov10" title="34">return dto.RatingRequestResponseDto{
+                CourseId: rating.CourseId,
+                UserId:   rating.UserId,
+                Rating:   rating.Rating,
+        }, nil</span>
+}
+func (r *ratingService) UpdateRating(data dto.RatingRequestResponseDto) (dto.RatingRequestResponseDto, error) <span class="cov10" title="34">{
+        var NewRating = model.Rating{
+                CourseId: data.CourseId,
+                UserId:   data.UserId,
+                Rating:   data.Rating,
+        }
+
+        rating, err := r.client.UpdateRating(NewRating)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.RatingRequestResponseDto{}, err
+        }</span>
+
+        <span class="cov10" title="34">return dto.RatingRequestResponseDto{
+                CourseId: rating.CourseId,
+                UserId:   rating.UserId,
+                Rating:   rating.Rating,
+        }, nil</span>
+}
+func (r *ratingService) GetRatings() (dto.RatingsResponse, error) <span class="cov10" title="34">{
+        response, err := r.client.GetRatings()
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.RatingsResponse{}, err
+        }</span>
+        <span class="cov10" title="34">var ratingsDTO dto.RatingsResponse
+        for _, result := range response </span><span class="cov10" title="34">{
+                ratingDto := dto.RatingRequestResponseDto{
+                        CourseId: result.CourseId,
+                        UserId:   result.UserId,
+                        Rating:   result.Rating,
+                }
+                ratingsDTO = append(ratingsDTO, ratingDto)
+        }</span>
+        <span class="cov10" title="34">return ratingsDTO, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file51" style="display: none">package services
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/clients/users"
+        userDomain "github.com/Guidotss/ucc-soft-arch-golang.git/src/domain/dtos/users"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/model"
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/utils/bcrypt"
+        "github.com/google/uuid"
+)
+
+type UserService struct {
+        client users.UsersClient
+}
+
+type IUserService interface {
+        CreateUser(user userDomain.RegisterRequest) (userDomain.RegisterResponse, error)
+        GetUserById(id uuid.UUID) (userDomain.GetUserDto, error)
+        GetUserByEmail(email string) (userDomain.GetUserDto, error)
+        UpdateUser(dto userDomain.UpdateRequestDto) (userDomain.UpdateResponseDto, error)
+}
+
+func NewUserService(client *users.UsersClient) IUserService <span class="cov8" title="34">{
+        return &amp;UserService{client: *client}
+}</span>
+
+func (u *UserService) CreateUser(user userDomain.RegisterRequest) (userDomain.RegisterResponse, error) <span class="cov8" title="34">{
+        hassedPassword, err := bcrypt.HasPassword(user.Password)
+        if err != nil </span><span class="cov0" title="0">{
+                return userDomain.RegisterResponse{}, err
+        }</span>
+
+        <span class="cov8" title="34">var newUser = model.User{
+                Password: hassedPassword,
+                Email:    user.Email,
+                Name:     user.Username,
+                Avatar:   user.Avatar,
+        }
+
+        response, err := u.client.Create(newUser)
+        if err != nil </span><span class="cov0" title="0">{
+                return userDomain.RegisterResponse{}, err
+        }</span>
+
+        <span class="cov8" title="34">return userDomain.RegisterResponse{
+                Id:       response.Id,
+                Email:    response.Email,
+                Role:     response.Role,
+                Username: response.Name,
+                Avatar:   response.Avatar,
+        }, nil</span>
+}
+
+func (u *UserService) GetUserById(id uuid.UUID) (userDomain.GetUserDto, error) <span class="cov8" title="34">{
+        user, err := u.client.FindById(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return userDomain.GetUserDto{}, err
+        }</span>
+        <span class="cov8" title="34">return userDomain.GetUserDto{
+                Id:       user.Id,
+                Email:    user.Email,
+                Role:     user.Role,
+                UserName: user.Name,
+                Avatar:   user.Avatar,
+        }, nil</span>
+}
+
+func (u *UserService) GetUserByEmail(email string) (userDomain.GetUserDto, error) <span class="cov8" title="34">{
+        user, err := u.client.FindByEmail(email)
+        if err != nil </span><span class="cov0" title="0">{
+                return userDomain.GetUserDto{}, err
+        }</span>
+
+        <span class="cov8" title="34">return userDomain.GetUserDto{
+                Id:       user.Id,
+                Email:    user.Email,
+                Role:     user.Role,
+                UserName: user.Name,
+                Avatar:   user.Avatar,
+        }, nil</span>
+}
+func (u *UserService) UpdateUser(dto userDomain.UpdateRequestDto) (userDomain.UpdateResponseDto, error) <span class="cov10" title="68">{
+        var user model.User
+        user.Id = dto.Id
+        if dto.Password != "" </span><span class="cov8" title="34">{
+                hassedPassword, _ := bcrypt.HasPassword(dto.Password)
+                dto.Password = hassedPassword
+                user.Password = dto.Password
+        }</span>
+        <span class="cov10" title="68">if dto.Username != "" </span><span class="cov8" title="34">{
+                user.Name = dto.Username
+        }</span>
+        <span class="cov10" title="68">if dto.Email != "" </span><span class="cov0" title="0">{
+                user.Email = dto.Email
+        }</span>
+        <span class="cov10" title="68">if dto.Avatar != "" </span><span class="cov8" title="34">{
+                user.Avatar = dto.Avatar
+        }</span>
+
+        <span class="cov10" title="68">user, err := u.client.UpdateUser(user)
+        if err != nil </span><span class="cov0" title="0">{
+                return userDomain.UpdateResponseDto{}, err
+        }</span>
+
+        <span class="cov10" title="68">return userDomain.UpdateResponseDto{
+                Id:       user.Id,
+                Username: user.Name,
+                Email:    user.Email,
+                Avatar:   user.Avatar,
+                Role:     user.Role,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file52" style="display: none">package bcrypt
+
+import "golang.org/x/crypto/bcrypt"
+
+func ComparePassword(password string, hash string) bool <span class="cov10" title="68">{
+        err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+        return err == nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file53" style="display: none">package bcrypt
+
+import "golang.org/x/crypto/bcrypt"
+
+func HasPassword(password string) (string, error) <span class="cov10" title="68">{
+        hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov10" title="68">return string(hash), nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file54" style="display: none">package jwt
+
+import (
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/config"
+        "github.com/golang-jwt/jwt"
+        "github.com/google/uuid"
+)
+
+type CustomClaims struct {
+        Id   uuid.UUID `json:"id"`
+        Role int       `json:"role"`
+}
+
+func (c *CustomClaims) Valid() error <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func NewCustomClaims(id uuid.UUID, role int) *CustomClaims <span class="cov10" title="34">{
+        return &amp;CustomClaims{
+                Id:   id,
+                Role: role,
+        }
+}</span>
+
+func SignDocument(id uuid.UUID, role int) string <span class="cov10" title="34">{
+        claims := NewCustomClaims(id, role)
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+        envs := config.LoadEnvs(".env")
+        secret := []byte(envs.Get("JWT_SECRET"))
+        signedToken, err := token.SignedString(secret)
+        if err != nil </span><span class="cov0" title="0">{
+                return ""
+        }</span>
+        <span class="cov10" title="34">return signedToken</span>
+}
+</pre>
+		
+		<pre class="file" id="file55" style="display: none">package jwt
+
+import (
+        "fmt"
+
+        "github.com/Guidotss/ucc-soft-arch-golang.git/src/config"
+        "github.com/golang-jwt/jwt/v5"
+)
+
+func VerifyToken(tokenString string) (map[string]interface{}, error) <span class="cov10" title="68">{
+        token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) </span><span class="cov8" title="34">{
+                if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+                }</span>
+                <span class="cov8" title="34">envs := config.LoadEnvs(".env")
+                return []byte(envs.Get("JWT_SECRET")), nil</span>
+        })
+
+        <span class="cov10" title="68">if err != nil </span><span class="cov8" title="34">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="34">if claims, ok := token.Claims.(jwt.MapClaims); ok &amp;&amp; token.Valid </span><span class="cov8" title="34">{
+                return claims, nil
+        }</span>
+
+        <span class="cov0" title="0">return nil, fmt.Errorf("invalid token")</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

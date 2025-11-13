@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthContext } from "@/context";
-import { LoginDto } from "@/types";
+import type { LoginDto } from "@/types";
 
 type LoginForm = {
   Email: string;
@@ -64,9 +64,9 @@ export const LoginForm = () => {
         className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
         {...register("Password")}
       />
-      {errors.Email && (
+      {errors.Password && (
         <span className="text-red-500 text-sm font-light -mt-3">
-          {errors.Email.message}
+          {errors.Password.message}
         </span>
       )}
       <button className="p-3 bg-purple-700 text-white rounded-lg font-semibold tracking-wider hover:bg-opacity-80 transition-all duration-300 ease-in-out">

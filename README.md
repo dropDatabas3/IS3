@@ -125,6 +125,12 @@ docker compose -f docker-compose.yaml exec db_qa psql -U app -d app -c "CREATE T
 docker compose -f docker-compose.yaml exec db psql -U app -d app -c "SELECT * FROM test_dummy;"  # Debe estar vacía si no lo creaste allí
 ```
 
+## Testing del Frontend
+
+Para una guía completa y sencilla sobre cómo correr los tests del frontend, leer los reportes y entender el coverage (incluyendo dónde ver `index.html` y qué significan las métricas):
+
+- Ver `testing_frontend.md` en la raíz del repositorio.
+
 ## Publicar imágenes en Docker Hub (ejemplo)
 ```powershell
 # Login

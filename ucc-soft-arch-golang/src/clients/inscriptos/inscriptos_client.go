@@ -67,11 +67,11 @@ func (c *InscriptosClient) GetMyCourses(id uuid.UUID) (model.Courses, error) {
 			Id:                parseUUID(rawResults[i]["id"]),
 			CourseName:        rawResults[i]["course_name"].(string),
 			CourseDescription: rawResults[i]["course_description"].(string),
-			CoursePrice:       rawResults[i]["course_price"].(float64),
-			CourseDuration:    int(rawResults[i]["course_duration"].(int64)),
+			CoursePrice:       toFloat64(rawResults[i]["course_price"]),
+			CourseDuration:    toInt(rawResults[i]["course_duration"]),
 			CourseInitDate:    rawResults[i]["course_init_date"].(string),
-			CourseState:       rawResults[i]["course_state"].(bool),
-			CourseCapacity:    int(rawResults[i]["course_capacity"].(int64)),
+			CourseState:       toBool(rawResults[i]["course_state"]),
+			CourseCapacity:    toInt(rawResults[i]["course_capacity"]),
 			CourseImage:       rawResults[i]["course_image"].(string),
 			CategoryID:        parseUUID(rawResults[i]["category_id"]),
 			Category: model.Category{
@@ -92,12 +92,16 @@ func (c *InscriptosClient) GetMyStudents(id uuid.UUID) (model.Users, error) {
 	`, id).Scan(&rawResults).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, customError.NewError("STUDENST_NOT_FOUND", "No Students found for the specified course", http.StatusNoContent)
+			return nil, customError.NewError("STUDENTS_NOT_FOUND", "No Students found for the specified course", http.StatusNotFound)
 		} else if strings.Contains(err.Error(), "connection") {
 			return nil, customError.NewError("DB_CONNECTION_ERROR", "Database connection error. Please try again later.", http.StatusInternalServerError)
 		} else {
 			return nil, customError.NewError("UNEXPECTED_ERROR", "An unexpected error occurred. Please try again later.", http.StatusInternalServerError)
 		}
+	}
+	// When using Raw+Scan, no rows does not return ErrRecordNotFound; handle explicit empty result set
+	if len(rawResults) == 0 {
+		return nil, customError.NewError("STUDENTS_NOT_FOUND", "No Students found for the specified course", http.StatusNotFound)
 	}
 	var students model.Users
 	for i := 0; i < len(rawResults); i++ {
@@ -142,4 +146,68 @@ func parseUUID(value interface{}) uuid.UUID {
 		return id
 	}
 	return uuid.Nil
+}
+
+// helpers to normalize sqlite vs postgres scan types
+func toBool(v interface{}) bool {
+	switch t := v.(type) {
+	case bool:
+		return t
+	case int64:
+		return t != 0
+	case int:
+		return t != 0
+	case float64:
+		return t != 0
+	case []byte:
+		s := string(t)
+		return s == "1" || strings.EqualFold(s, "true")
+	case string:
+		return t == "1" || strings.EqualFold(t, "true")
+	default:
+		return false
+	}
+}
+
+func toInt(v interface{}) int {
+	switch t := v.(type) {
+	case int:
+		return t
+	case int32:
+		return int(t)
+	case int64:
+		return int(t)
+	case float32:
+		return int(t)
+	case float64:
+		return int(t)
+	case []byte:
+		// best effort parse
+		s := string(t)
+		var n int
+		fmt.Sscanf(s, "%d", &n)
+		return n
+	default:
+		return 0
+	}
+}
+
+func toFloat64(v interface{}) float64 {
+	switch t := v.(type) {
+	case float64:
+		return t
+	case float32:
+		return float64(t)
+	case int:
+		return float64(t)
+	case int64:
+		return float64(t)
+	case []byte:
+		s := string(t)
+		var f float64
+		fmt.Sscanf(s, "%f", &f)
+		return f
+	default:
+		return 0
+	}
 }

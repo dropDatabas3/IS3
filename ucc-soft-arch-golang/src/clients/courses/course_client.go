@@ -93,10 +93,11 @@ func (c *CourseClient) GetAll(filter string) (model.Courses, error) {
 			ON
 				courses.category_id = categories.id
 			WHERE
-				courses.deleted_at IS NULL AND
-				courses.course_name ILIKE ? OR
-				courses.course_description ILIKE ? OR
-				categories.category_name ILIKE ?`, "%"+filter+"%", "%"+filter+"%", "%"+filter+"%").Scan(&rawResults).Error
+				courses.deleted_at IS NULL AND (
+					LOWER(courses.course_name) LIKE LOWER(?) OR
+					LOWER(courses.course_description) LIKE LOWER(?) OR
+					LOWER(categories.category_name) LIKE LOWER(?)
+				)`, "%"+filter+"%", "%"+filter+"%", "%"+filter+"%").Scan(&rawResults).Error
 		if err != nil {
 			fmt.Println("error: ", err)
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -110,17 +111,17 @@ func (c *CourseClient) GetAll(filter string) (model.Courses, error) {
 			Id:                parseUUID(data["id"]),
 			CourseName:        data["course_name"].(string),
 			CourseDescription: data["course_description"].(string),
-			CoursePrice:       data["course_price"].(float64),
-			CourseDuration:    int(data["course_duration"].(int64)),
+			CoursePrice:       toFloat64(data["course_price"]),
+			CourseDuration:    toInt(data["course_duration"]),
 			CourseInitDate:    data["course_init_date"].(string),
-			CourseState:       data["course_state"].(bool),
-			CourseCapacity:    int(data["course_capacity"].(int64)),
+			CourseState:       toBool(data["course_state"]),
+			CourseCapacity:    toInt(data["course_capacity"]),
 			CourseImage:       data["course_image"].(string),
 			CategoryID:        parseUUID(data["category_id"]),
 			Category: model.Category{
 				CategoryName: data["category_name"].(string),
 			},
-			RatingAvg: data["ratingavg"].(float64),
+			RatingAvg: toFloat64(data["ratingavg"]),
 		}
 		courses = append(courses, course)
 	}
@@ -148,21 +149,25 @@ func (c *CourseClient) GetById(id uuid.UUID) (model.Course, error) {
 		}
 		return model.Course{}, customError.NewError("DB_ERROR", "Error retrieving course from database", http.StatusInternalServerError)
 	}
+	// When using Raw+Scan into a map, no rows results in a nil/empty map and no error; handle explicitly
+	if rawResult == nil || len(rawResult) == 0 {
+		return model.Course{}, customError.NewError("NOT_FOUND", "Course not found", http.StatusNotFound)
+	}
 	course := model.Course{
 		Id:                parseUUID(rawResult["id"]),
 		CourseName:        rawResult["course_name"].(string),
 		CourseDescription: rawResult["course_description"].(string),
-		CoursePrice:       rawResult["course_price"].(float64),
-		CourseDuration:    int(rawResult["course_duration"].(int64)),
+		CoursePrice:       toFloat64(rawResult["course_price"]),
+		CourseDuration:    toInt(rawResult["course_duration"]),
 		CourseInitDate:    rawResult["course_init_date"].(string),
-		CourseState:       rawResult["course_state"].(bool),
-		CourseCapacity:    int(rawResult["course_capacity"].(int64)),
+		CourseState:       toBool(rawResult["course_state"]),
+		CourseCapacity:    toInt(rawResult["course_capacity"]),
 		CourseImage:       rawResult["course_image"].(string),
 		CategoryID:        parseUUID(rawResult["category_id"]),
 		Category: model.Category{
 			CategoryName: rawResult["category_name"].(string),
 		},
-		RatingAvg: rawResult["ratingavg"].(float64),
+		RatingAvg: toFloat64(rawResult["ratingavg"]),
 	}
 	return course, nil
 }
@@ -222,4 +227,68 @@ func parseUUID(value interface{}) uuid.UUID {
 		return id
 	}
 	return uuid.Nil
+}
+
+// helpers to normalize sqlite vs postgres scan types
+func toBool(v interface{}) bool {
+	switch t := v.(type) {
+	case bool:
+		return t
+	case int64:
+		return t != 0
+	case int:
+		return t != 0
+	case float64:
+		return t != 0
+	case []byte:
+		s := string(t)
+		return s == "1" || strings.EqualFold(s, "true")
+	case string:
+		return t == "1" || strings.EqualFold(t, "true")
+	default:
+		return false
+	}
+}
+
+func toInt(v interface{}) int {
+	switch t := v.(type) {
+	case int:
+		return t
+	case int32:
+		return int(t)
+	case int64:
+		return int(t)
+	case float32:
+		return int(t)
+	case float64:
+		return int(t)
+	case []byte:
+		// best effort parse
+		s := string(t)
+		var n int
+		fmt.Sscanf(s, "%d", &n)
+		return n
+	default:
+		return 0
+	}
+}
+
+func toFloat64(v interface{}) float64 {
+	switch t := v.(type) {
+	case float64:
+		return t
+	case float32:
+		return float64(t)
+	case int:
+		return float64(t)
+	case int64:
+		return float64(t)
+	case []byte:
+		s := string(t)
+		var f float64
+		fmt.Sscanf(s, "%f", &f)
+		return f
+	default:
+		return 0
+	}
 }

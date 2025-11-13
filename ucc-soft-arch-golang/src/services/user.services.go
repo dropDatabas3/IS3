@@ -84,6 +84,7 @@ func (u *UserService) UpdateUser(dto userDomain.UpdateRequestDto) (userDomain.Up
 	if dto.Password != "" {
 		hassedPassword, _ := bcrypt.HasPassword(dto.Password)
 		dto.Password = hassedPassword
+		user.Password = dto.Password
 	}
 	if dto.Username != "" {
 		user.Name = dto.Username
