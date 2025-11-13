@@ -1,4 +1,7 @@
 "use client";
+
+export const dynamic = "force-dynamic";
+
 import { useState, useContext } from "react";
 import { CourseCarrusel, CoursesList } from "@/components";
 import { CourseModal } from "@/components/courses/CourseDetail";

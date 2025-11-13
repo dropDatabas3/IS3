@@ -1,9 +1,10 @@
+version: "3.8"
+
 networks:
   appnet:
     driver: bridge
 
 services:
-  # Production DB and app
   db:
     image: postgres:15-alpine
     restart: unless-stopped
@@ -20,87 +21,28 @@ services:
       - appnet
 
   backend:
-    image: ${DOCKER_USER:-nallarmariano}/is3-backend:${BACKEND_TAG:-v1.0}
+    build:
+      context: ./ucc-soft-arch-golang
+      dockerfile: Dockerfile
+    image: is3-backend:local
     ports:
       - "8000:8000"
     environment:
-      - ENV=production
+      - ENV=development
       - PORT=8000
-      - DATABASE_URL=${DATABASE_URL:-postgres://app:password@db:5432/app?sslmode=disable}
-      - PGHOST=${PGHOST:-db}
-      - PGPORT=${PGPORT:-5432}
-      - PGUSER=${PGUSER:-app}
-      - PGPASSWORD=${PGPASSWORD:-password}
-      - PGDATABASE=${PGDATABASE:-app}
+      - DATABASE_URL=postgres://app:password@db:5432/app?sslmode=disable
+      - PGHOST=db
+      - PGPORT=5432
+      - PGUSER=app
+      - PGPASSWORD=password
+      - PGDATABASE=app
     depends_on:
       - db
     networks:
       - appnet
 
-  frontend:
-    image: ${DOCKER_USER:-nallarmariano}/is3-frontend:${FRONTEND_TAG:-v1.0}
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - RUNTIME_PUBLIC_API_URL=${RUNTIME_PUBLIC_API_URL:-http://localhost:8000}
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
-      - INTERNAL_API=${INTERNAL_API:-http://backend:8000}
-    depends_on:
-      - backend
-    networks:
-      - appnet
 
-  # QA DB and app (separate ports and volumes)
-  db_qa:
-    image: postgres:15-alpine
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=${QA_PGUSER:-app}
-      - POSTGRES_PASSWORD=${QA_PGPASSWORD:-password}
-      - POSTGRES_DB=${QA_PGDATABASE:-app}
-      - PGDATA=${QA_PGDATA:-/var/lib/postgresql/data/pgdata}
-    volumes:
-      - db_data_qa:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    networks:
-      - appnet
 
-  backend_qa:
-    image: ${DOCKER_USER:-nallarmariano}/is3-backend:${QA_BACKEND_TAG:-v1.0}
-    ports:
-      - "8001:8000"
-    environment:
-      - ENV=qa
-      - PORT=8000
-      - DATABASE_URL=${QA_DATABASE_URL:-postgres://app:password@db_qa:5432/app?sslmode=disable}
-      - PGHOST=${QA_PGHOST:-db_qa}
-      - PGPORT=${QA_PGPORT:-5432}
-      - PGUSER=${QA_PGUSER:-app}
-      - PGPASSWORD=${QA_PGPASSWORD:-password}
-      - PGDATABASE=${QA_PGDATABASE:-app}
-    depends_on:
-      - db_qa
-    networks:
-      - appnet
-
-  frontend_qa:
-    # Usa la misma imagen que prod, pero cambia la URL pública en runtime
-    image: ${DOCKER_USER:-nallarmariano}/is3-frontend:${QA_FRONTEND_TAG:-v1.0}
-    ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=production
-      # El frontend QA en el navegador debe llamar al backend QA (host 8001)
-      - RUNTIME_PUBLIC_API_URL=${QA_RUNTIME_PUBLIC_API_URL:-http://localhost:8001}
-      - NEXT_PUBLIC_API_URL=${QA_NEXT_PUBLIC_API_URL:-http://localhost:8001}
-      - INTERNAL_API=${QA_INTERNAL_API:-http://backend_qa:8000}
-    depends_on:
-      - backend_qa
-    networks:
-      - appnet
 
 volumes:
   db_data:
-  db_data_qa:

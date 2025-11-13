@@ -5,8 +5,8 @@ module.exports = {
       {
         // Target modern browsers and current Node; let Next handle polyfills
         targets: { browsers: ['defaults'], node: 'current' },
-        // For Jest, compile ESM to CommonJS so require() works for transformed deps
-        modules: 'commonjs'
+        // IMPORTANTE: no forzar modules: 'commonjs' para no romper el build de Next
+        // Si Jest necesitara CommonJS, se puede configurar solo en jest.config.
       }
     ],
     [

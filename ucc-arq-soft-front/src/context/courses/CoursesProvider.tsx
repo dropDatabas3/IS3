@@ -42,18 +42,23 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   }, []);
 
   const fetchCourses = async () => {
-    try {
-  const reponse = await fetch(`${apiUrl()}/courses`);
-      if (reponse.ok) {
-        const data = await reponse.json();
-        console.log("Courses from server: ", data);
-        const courses = data.map((course: any) => courseMapper(course));
-        dispatch({ type: "[Courses] - Load All", payload: courses });
-      }
-    } catch (error) {
-      console.log(error);
-      showToast("Error al cargar los cursos", "error");
+  try {
+    const response = await fetch(`${apiUrl()}/courses`);
+    if (!response.ok) {
+    console.log("Error al cargar cursos, status: ", response.status);
+    showToast("Error al cargar los cursos", "error");
+    return;
     }
+    const data = await response.json();
+    console.log("Courses from server: ", data);
+    const list = Array.isArray(data) ? data : data?.data ?? [];
+    const courses = list.map((course: any) => courseMapper(course));
+    dispatch({ type: "[Courses] - Load All", payload: courses });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: "[Courses] - Load All", payload: [] });
+    showToast("Error al cargar los cursos", "error");
+  }
   };
   
 
@@ -82,20 +87,22 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
   }, [showToast]);
 
   const getRatings = async () => {
-    try {
-      const response = await fetch(
-        `${apiUrl()}/rating`
-      );
-      const data = await response.json();
-      if (response.status !== 200) {
-        showToast("Error al cargar las calificaciones", "error");
-        return;
-      }
-      dispatch({ type: "[Ratings] - Load All Ratings", payload: data });
-    } catch (error) {
-      console.log(error);
-      showToast("Error al cargar las calificaciones", "error");
+  try {
+    const response = await fetch(
+    `${apiUrl()}/rating`
+    );
+    if (!response.ok) {
+    showToast("Error al cargar las calificaciones", "error");
+    return;
     }
+    const data = await response.json();
+    const list = Array.isArray(data) ? data : data?.data ?? [];
+    dispatch({ type: "[Ratings] - Load All Ratings", payload: list });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: "[Ratings] - Load All Ratings", payload: [] });
+    showToast("Error al cargar las calificaciones", "error");
+  }
   }
 
   const createComment = async (courseId: string, userId: string, comment: string) => {
@@ -320,9 +327,10 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
       const response = await fetch(
   `${apiUrl()}/courses?filter=${search}`
       );
-      const data = await response.json();
-      const courses = data.map((course: any) => courseMapper(course));
-      dispatch({ type: "[Courses] - Filter", payload: courses });
+  const data = await response.json();
+  const list = Array.isArray(data) ? data : data?.data ?? [];
+  const courses = list.map((course: any) => courseMapper(course));
+  dispatch({ type: "[Courses] - Filter", payload: courses });
     } catch (error) {
       console.log(error);
       showToast("Error al filtrar los cursos", "error");
@@ -350,9 +358,10 @@ export const CoursesProvider: FC<CoursesProviderProps> = ({ children }) => {
         return;
       }
       const data = await response.json();
-      const courses = data?.map((course: any) => courseMapper(course));
-      console.log("courses: ", courses);
-      dispatch({ type: "[Courses] - My Courses", payload: courses });
+    const list = Array.isArray(data) ? data : data?.data ?? [];
+    const courses = list.map((course: any) => courseMapper(course));
+    console.log("courses: ", courses);
+    dispatch({ type: "[Courses] - My Courses", payload: courses });
     } catch (error) {
       console.log(error);
       showToast("Error al cargar mis cursos", "error");

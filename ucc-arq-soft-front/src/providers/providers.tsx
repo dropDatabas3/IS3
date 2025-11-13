@@ -1,3 +1,5 @@
+"use client";
+
 import { AuthProvider, CoursesProvider, UiProvider } from "@/context";
 
 interface ProvidersProps {

@@ -1,4 +1,7 @@
 "use client";
+
+export const dynamic = "force-dynamic";
+
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { AuthContext, CoursesContext } from "@/context";
