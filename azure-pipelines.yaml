@@ -121,21 +121,63 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
+          $ErrorActionPreference = 'Stop'
           $file = "$(frontendPath)\coverage\cobertura-coverage.xml"
           if (Test-Path $file) {
-            $content = Get-Content -Raw -Path $file
-            $root = "$(System.DefaultWorkingDirectory)"
-            $pattern = [Regex]::Escape($root)
-            $content = [Regex]::Replace($content, $pattern, ".")
-            $rootFwd = $root -replace '\\','/'
-            $patternFwd = [Regex]::Escape($rootFwd)
-            $content = [Regex]::Replace($content, $patternFwd, ".")
-            Set-Content -Path $file -Value $content -NoNewline
+            try {
+              [xml]$xml = Get-Content -Raw -Path $file
+            } catch {
+              Write-Host "Cobertura XML not well-formed, using raw replace fallback"; $xml = $null
+            }
+
+            if ($xml -ne $null -and $xml.coverage) {
+              # 1) Normalize <sources><source> => '.'
+              if ($xml.coverage.sources -and $xml.coverage.sources.source) {
+                foreach ($src in @($xml.coverage.sources.source)) { $src.'#text' = "." }
+              }
+
+              # 2) Normalize class filename attributes to be relative and POSIX separators
+              $prefixes = @(
+                "$(Build.SourcesDirectory)\",
+                "$(Build.SourcesDirectory)/",
+                "$(System.DefaultWorkingDirectory)\",
+                "$(System.DefaultWorkingDirectory)/"
+              )
+
+              $classes = @()
+              if ($xml.coverage.packages) {
+                foreach ($pkg in @($xml.coverage.packages.package)) {
+                  if ($pkg.classes -and $pkg.classes.class) { $classes += @($pkg.classes.class) }
+                }
+              }
+              foreach ($cls in $classes) {
+                if (-not $cls.filename) { continue }
+                $fn = [string]$cls.filename
+                foreach ($p in $prefixes) { if ($fn -like "*${p}*") { $fn = $fn -replace [Regex]::Escape($p), '' } }
+                $fn = $fn -replace '\\','/'
+                if ($fn.StartsWith('/')) { $fn = $fn.TrimStart('/') }
+                $cls.filename = $fn
+              }
+
+              $xml.Save($file)
+            } else {
+              # Fallback: raw string replace for both backslash and forward-slash variants
+              $content = Get-Content -Raw -Path $file
+              foreach ($root in @("$(Build.SourcesDirectory)", "$(System.DefaultWorkingDirectory)")) {
+                $content = $content -replace [Regex]::Escape($root), "."
+                $content = $content -replace [Regex]::Escape(($root -replace '\\','/')), "."
+              }
+              $content = $content -replace '\\','/'
+              Set-Content -Path $file -Value $content -NoNewline
+            }
+          } else {
+            Write-Host "Cobertura file not found: $file"
           }
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Frontend Coverage (Cobertura)'
       condition: succeededOrFailed()
+      continueOnError: true
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(frontendPath)/coverage/cobertura-coverage.xml'
@@ -241,21 +283,55 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
+          $ErrorActionPreference = 'Stop'
           $file = "$(backendPath)\coverage.cobertura.xml"
           if (Test-Path $file) {
-            $content = Get-Content -Raw -Path $file
-            $root = "$(System.DefaultWorkingDirectory)"
-            $pattern = [Regex]::Escape($root)
-            $content = [Regex]::Replace($content, $pattern, ".")
-            $rootFwd = $root -replace '\\','/'
-            $patternFwd = [Regex]::Escape($rootFwd)
-            $content = [Regex]::Replace($content, $patternFwd, ".")
-            Set-Content -Path $file -Value $content -NoNewline
+            try {
+              [xml]$xml = Get-Content -Raw -Path $file
+            } catch { Write-Host "Cobertura XML not well-formed, using raw replace fallback"; $xml = $null }
+
+            if ($xml -ne $null -and $xml.coverage) {
+              if ($xml.coverage.sources -and $xml.coverage.sources.source) {
+                foreach ($src in @($xml.coverage.sources.source)) { $src.'#text' = "." }
+              }
+              $prefixes = @(
+                "$(Build.SourcesDirectory)\",
+                "$(Build.SourcesDirectory)/",
+                "$(System.DefaultWorkingDirectory)\",
+                "$(System.DefaultWorkingDirectory)/"
+              )
+              $classes = @()
+              if ($xml.coverage.packages) {
+                foreach ($pkg in @($xml.coverage.packages.package)) {
+                  if ($pkg.classes -and $pkg.classes.class) { $classes += @($pkg.classes.class) }
+                }
+              }
+              foreach ($cls in $classes) {
+                if (-not $cls.filename) { continue }
+                $fn = [string]$cls.filename
+                foreach ($p in $prefixes) { if ($fn -like "*${p}*") { $fn = $fn -replace [Regex]::Escape($p), '' } }
+                $fn = $fn -replace '\\','/'
+                if ($fn.StartsWith('/')) { $fn = $fn.TrimStart('/') }
+                $cls.filename = $fn
+              }
+              $xml.Save($file)
+            } else {
+              $content = Get-Content -Raw -Path $file
+              foreach ($root in @("$(Build.SourcesDirectory)", "$(System.DefaultWorkingDirectory)")) {
+                $content = $content -replace [Regex]::Escape($root), "."
+                $content = $content -replace [Regex]::Escape(($root -replace '\\','/')), "."
+              }
+              $content = $content -replace '\\','/'
+              Set-Content -Path $file -Value $content -NoNewline
+            }
+          } else {
+            Write-Host "Cobertura file not found: $file"
           }
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Backend Coverage (Cobertura)'
       condition: succeededOrFailed()
+      continueOnError: true
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(backendPath)/coverage.cobertura.xml'
