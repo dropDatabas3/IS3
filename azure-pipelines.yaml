@@ -228,65 +228,71 @@ stages:
   dependsOn: BuildAndPushBackend
   condition: succeeded()
   jobs:
-  - job: DeployBackendQA
+  - deployment: DeployBackendQA
     displayName: 'Deploy Backend (QA)'
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'QA'   # Environment QA en Azure DevOps (sin aprobación)
-    steps:
-      - task: AzureWebApp@1
-        displayName: 'Deploy Backend QA (container)'
-        inputs:
-          azureSubscription: '$(azureSubscription)'
-          appName: '$(backendAppQA)'
-          appType: 'webAppLinux'
-          runtimeStack: ''
-          imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
-          appSettings: >
-            -PORT 8000
-            -ENV qa
-            -DATABASE_URL $(DATABASE_URL_QA)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureWebApp@1
+              displayName: 'Deploy Backend QA (container)'
+              inputs:
+                azureSubscription: '$(azureSubscription)'
+                appName: '$(backendAppQA)'
+                appType: 'webAppLinux'
+                runtimeStack: ''
+                imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+                appSettings: >
+                  -PORT 8000
+                  -ENV qa
+                  -DATABASE_URL $(DATABASE_URL_QA)
 
-      - task: PowerShell@2
-        displayName: 'Health Check QA (/health)'
-        inputs:
-          targetType: 'inline'
-          script: |
-            $ErrorActionPreference = 'Stop'
-            Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
-            $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
-            if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+            - task: PowerShell@2
+              displayName: 'Health Check QA (/health)'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $ErrorActionPreference = 'Stop'
+                  Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                  $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
+                  if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
 
 - stage: Deploy_PROD
   displayName: 'TP05: Deploy Backend to PROD (Approval)'
   dependsOn: Deploy_QA
   condition: succeeded()
   jobs:
-  - job: DeployBackendProd
+  - deployment: DeployBackendProd
     displayName: 'Deploy Backend (PROD)'
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'PROD'  # Configurar aprobación manual en Environment PROD
-    steps:
-      - task: AzureWebApp@1
-        displayName: 'Deploy Backend PROD (container)'
-        inputs:
-          azureSubscription: '$(azureSubscription)'
-          appName: '$(backendAppProd)'
-          appType: 'webAppLinux'
-          runtimeStack: ''
-          imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
-          appSettings: >
-            -PORT 8000
-            -ENV production
-            -DATABASE_URL $(DATABASE_URL_PROD)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureWebApp@1
+              displayName: 'Deploy Backend PROD (container)'
+              inputs:
+                azureSubscription: '$(azureSubscription)'
+                appName: '$(backendAppProd)'
+                appType: 'webAppLinux'
+                runtimeStack: ''
+                imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
+                appSettings: >
+                  -PORT 8000
+                  -ENV production
+                  -DATABASE_URL $(DATABASE_URL_PROD)
 
-      - task: PowerShell@2
-        displayName: 'Health Check PROD (/health)'
-        inputs:
-          targetType: 'inline'
-          script: |
-            $ErrorActionPreference = 'Stop'
-            Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
-            $resp = Invoke-WebRequest -Uri "$(backendUrlProd)/health" -UseBasicParsing
-            if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+            - task: PowerShell@2
+              displayName: 'Health Check PROD (/health)'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $ErrorActionPreference = 'Stop'
+                  Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
+                  $resp = Invoke-WebRequest -Uri "$(backendUrlProd)/health" -UseBasicParsing
+                  if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
