@@ -26,52 +26,117 @@ Notas de estructura: menos capas, menos peso, arranque rápido y sin herramienta
 - Beneficio: podemos “anclar” un despliegue a una versión exacta y volver atrás si hace falta.
 
 ---
+- Subimos las imágenes a Docker Hub con el usuario `nallarmariano` (se puede cambiar por variable si se usa otro usuario).
+- Estrategia de tags: usamos `v1.0` como versión estable. Los entornos (QA/PROD) comparten la misma imagen y cambian por variables. Evitamos “pisar” un tag: si hay cambios, creamos `v1.1`, `v1.2`, etc.
+- Beneficio: podemos “anclar” un despliegue a una versión exacta y volver atrás si hace falta.
+
+---
+
 ## 4) Base de datos en contenedor y persistencia
-- Elegimos PostgreSQL porque es conocida, estable y se integra bien con Go.
-- Persistencia: definimos volúmenes nombrados para que los datos no se pierdan al reiniciar contenedores.
   - En el combinado: `db_data` (prod) y `db_data_qa` (qa)
   - En prod: `db_data_prod`
   - En qa: `db_data_qa`
-- Conexión: el backend se conecta por variables (host del servicio `db` o `db_qa` dentro de la red de Docker). Desde el host, para herramientas externas, usamos los puertos publicados (5432 para PROD y 5433 para QA).
 
----
 ## 5) QA y PROD con la misma imagen (variables de entorno)
-- Levantamos QA y PROD al mismo tiempo usando la misma imagen para frontend y backend. Lo que cambia son las variables de entorno y los puertos.
-- Puertos del host:
   - PROD: frontend 3000, backend 8000, DB 5432
   - QA: frontend 3001, backend 8001, DB 5433
-- Frontend (punto importante): Next.js suele “fijar” variables en build. Para evitar tener dos imágenes, agregamos una configuración en tiempo de arranque (un archivo `public/runtime-config.js` que se genera cuando inicia el contenedor). Así, una sola imagen sirve tanto para PROD como para QA, y el navegador apunta al backend correcto según `RUNTIME_PUBLIC_API_URL`.
-- Backend: toma la conexión a la base por variables (`DATABASE_URL` o `PGHOST`, `PGPORT`, etc.). La misma imagen sirve para ambos entornos.
 
 En resumen: una sola imagen, dos comportamientos según variables y puertos. Sin rebuild para cambiar de entorno.
 
----
 ## 6) Entorno reproducible con docker-compose
-- Archivos de Compose:
   - `docker-compose.yaml` (combinado: levanta QA y PROD a la vez)
   - `docker-compose.prod.yml` (sólo PROD)
   - `docker-compose.qa.yml` (sólo QA)
-- Qué levantan: frontend, backend y su base de datos correspondiente, con sus puertos y volúmenes.
-- Reproducibilidad: las imágenes se bajan desde Docker Hub por defecto (`nallarmariano/is3-frontend` y `nallarmariano/is3-backend` con `v1.0`). Si otro usuario quiere usar su propio namespace o tags, puede cambiarlo con variables de entorno sin tocar archivos:
   - `DOCKER_USER` (usuario de Docker Hub)
   - `FRONTEND_TAG` / `BACKEND_TAG`
   - `QA_FRONTEND_TAG` / `QA_BACKEND_TAG`
 
 Esto permite que el entorno se ejecute igual en cualquier máquina que tenga Docker y acceso a Internet.
 
----
 ## 7) Versión etiquetada y uso en Compose
-- Etiquetamos la versión estable como `v1.0` y actualizamos los Compose para usar esa etiqueta por defecto.
-- Convención de versionado: simple y clara (vX.Y). Cuando cambia algo relevante, subimos la versión (v1.1, v1.2…). Evitamos usar `latest` en producción para no llevarnos sorpresas.
 
----
 ## Evidencia de funcionamiento (resumen)
-- Ambos entornos corren a la vez sin pisarse: PROD (8000/3000/5432) y QA (8001/3001/5433).
-- El frontend de QA apunta a su backend (8001) gracias al archivo de configuración en runtime.
-- Los datos permanecen tras reiniciar contenedores porque usamos volúmenes.
+
+## Problemas comunes y cómo los resolvimos
+ - El frontend QA mostraba datos de PROD: antes de la mejora, Next.js “horneaba” la URL. Lo solucionamos generando la configuración en runtime y usando una sola imagen.
+ - Acceso a la DB desde el host: no funciona con el nombre del servicio (`db_qa`) desde afuera; se accede con `localhost:5433` (QA) o `localhost:5432` (PROD).
+
+## Notas finales
+El objetivo fue dejar algo simple, claro y que se pueda explicar en la defensa: una app conocida, imágenes pequeñas, QA y PROD corriendo al mismo tiempo con la misma imagen, datos persistentes y versiones controladas.
+
+## TP05 – CI/CD Release (build once, deploy many)
+
+### Arquitectura elegida (cloud + release)
+
+### Estrategia “build once → deploy many”
+
+### Stages y aprobaciones
+
+### Variables y secretos por entorno
+  - PORT=8000
+  - DATABASE_URL (QA/PROD difieren en host/credenciales; en Azure usar sslmode=require)
+  - RUNTIME_PUBLIC_API_URL: URL pública del backend del mismo entorno.
+  - INTERNAL_API: en este escenario, también la URL pública del backend (front y back están en Web Apps separadas).
+  - NEXT_PUBLIC_API_URL: opcional, igual a RUNTIME_PUBLIC_API_URL para consistencia.
+
+### Evidencias previstas
+
+### Rollback
+
+### Archivos de pipeline agregados
+  - `azure-pipelines.release.yaml`: BuildAndPush → Deploy_Testing → Deploy_Prod (todo en uno, build y deploy).
+  - `azure-pipelines.deploy.yaml`: sólo despliegue QA/Prod consumiendo un `imageTag` ya existente en ACR.
+  - Requisitos comunes:
+    - Service connection Docker Registry (ACR): para login/push o referenciar imágenes.
+    - Service connection Azure Resource Manager: para Web Apps.
+    - Environments `is3-qa` (sin aprobación) e `is3-prod` (con aprobación manual configurada).
+
+### Aprobaciones y responsables
+- Environment `is3-prod` con aprobación manual requerida.
+- Responsables sugeridos:
+  - Líder técnico (aprobación primaria).
+  - Docente/ayudante (si aplica, como observador o segundo aprobador).
+- Criterios de aprobación:
+  - QA en verde (health checks OK, smoke tests básicos desde el frontend).
+  - No hay errores críticos en el despliegue.
+ 
+#### Proceso concreto de aprobación (Gates)
+1. El pipeline `azure-pipelines.deploy.yaml` despliega QA con el tag construido en TP04 y ejecuta health checks.
+2. Si QA falla (código ≠ 200 en `/health` o `/`), el pipeline termina y no se solicita aprobación.
+3. Si QA pasa, Azure DevOps queda esperando aprobación manual en el Environment `is3-prod`:
+   - Los aprobadores revisan: página frontend QA cargó, endpoint `/health` en QA responde, cambios esperados OK.
+   - Verifican en ACR que el tag existe y no fue modificado (inmutabilidad).
+4. Aprobación manual: se hace click en "Approve" con comentario breve (ej.: "QA OK, procedemos a Prod").
+5. Se ejecuta despliegue a Prod (mismo tag) y health checks.
+6. Registro de evidencia: captura de pantalla del diálogo de aprobación + resultado final del job en Prod.
+
+#### Gates adicionales (opcionales)
+- Escaneo de seguridad de imagen antes de Prod (herramienta externa o extensión DevOps).
+- Gate de disponibilidad: un script que verifica latencia media del backend QA < X ms.
+- Gate de rollback automático: si `/health` en Prod falla 3 veces seguidas (status != 200), disparar redeploy del tag anterior manualmente.
+
+Con esto, el binario/imágenes validadas en Testing son exactamente las que llegan a Producción tras la aprobación manual.
 
 ---
-## Problemas comunes y cómo los resolvimos
-- El frontend QA mostraba datos de PROD: antes de la mejora, Next.js “horneaba” la URL. Lo solucionamos generando la configuración en runtime y usando una sola imagen.
-- Acceso a la DB desde el host: no funciona con el nombre del servicio (`db_qa`) desde afuera; se accede con `localhost:5433` (QA) o `localhost:5432` (PROD).
+## Inventario de recursos (Paso 1)
 
+- Región: Brazil South (brazilsouth)
+- Resource Groups:
+  - rg-is3-qa (QA)
+  - rg-is3-prod (Prod)
+  - rg-is3-shared (compartido para ACR/ASP)
+- ACR: is3acr (SKU Basic) en rg-is3-shared
+- App Service Plan (Linux): asp-is3-shared (SKU B1) en rg-is3-shared
+- Web Apps:
+  - is3-backend-qa (rg-is3-qa)
+  - is3-frontend-qa (rg-is3-qa)
+  - is3-backend-prod (rg-is3-prod)
+  - is3-frontend-prod (rg-is3-prod)
+- PostgreSQL Flexible:
+  - is3pgqa (rg-is3-qa), DB app, usuario app
+  - is3pgprod (rg-is3-prod), DB app, usuario app
+
+Notas:
+- DOCKER_REGISTRY_SERVER_* configurado en las Web Apps para permitir pull de imágenes privadas del ACR.
+- DATABASE_URL (Flexible Server): formato `postgres://app:<PASS>@<server>.postgres.database.azure.com:5432/app?sslmode=require`.
+- Deploy_Prod: despliega el mismo tag a producción y revalida salud; si falla, se recomienda redeploy del tag previo.

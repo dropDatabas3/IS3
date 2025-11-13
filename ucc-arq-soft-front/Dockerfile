@@ -23,5 +23,7 @@ COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
 # Runtime config entrypoint: generate public/runtime-config.js from env
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
+# Normalize line endings and ensure executable bit (Windows -> Linux)
+RUN sed -i 's/\r$//' /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
 ENTRYPOINT ["sh", "/app/docker-entrypoint.sh"]
 CMD ["npm", "start"]
