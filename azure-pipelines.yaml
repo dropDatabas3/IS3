@@ -95,15 +95,37 @@ stages:
         targetType: 'inline'
         script: |
           $ErrorActionPreference = 'Stop'
-          cd "$(frontendPath)"
+
+          $frontendRoot = Join-Path "$(System.DefaultWorkingDirectory)" "$(frontendPath)"
+          Write-Host "Frontend root: $frontendRoot"
+
+          cd $frontendRoot
+
           # Asegurar reporter JUnit disponible sin modificar package.json
           npm i --no-save jest-junit
+
           # Configurar salida JUnit y generar Cobertura + LCov
+          $testResultsDir = Join-Path $frontendRoot "test-results"
+          if (-not (Test-Path $testResultsDir)) {
+            New-Item -ItemType Directory -Path $testResultsDir | Out-Null
+          }
+
           $env:CI = 'true'
-          $env:JEST_JUNIT_OUTPUT = "$(frontendPath)\test-results\junit.xml"
-          if (-not (Test-Path "$(frontendPath)\test-results")) { New-Item -ItemType Directory -Path "$(frontendPath)\test-results" | Out-Null }
+          $env:JEST_JUNIT_OUTPUT = (Join-Path $testResultsDir "junit.xml")
+          Write-Host "JUnit output: $env:JEST_JUNIT_OUTPUT"
+
           # Ejecutar jest con reportes
           npx jest --ci --reporters=default --reporters=jest-junit --coverage --coverageReporters=cobertura --coverageReporters=lcov
+
+          # Verificar que se generaron los archivos esperados
+          if (-not (Test-Path $env:JEST_JUNIT_OUTPUT)) {
+            Write-Error "JUnit report file was not generated at $env:JEST_JUNIT_OUTPUT"
+          }
+
+          $coberturaFile = Join-Path $frontendRoot "coverage\cobertura-coverage.xml"
+          if (-not (Test-Path $coberturaFile)) {
+            Write-Error "Cobertura coverage file was not generated at $coberturaFile"
+          }
 
     - task: PublishTestResults@2
       displayName: 'Publish Frontend Test Results (JUnit)'
@@ -171,7 +193,7 @@ stages:
               Set-Content -Path $file -Value $content -NoNewline
             }
           } else {
-            Write-Host "Cobertura file not found: $file"
+            Write-Host "Cobertura file not found: $file (skip normalization)"
           }
 
     - task: PublishCodeCoverageResults@2
