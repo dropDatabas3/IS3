@@ -9,8 +9,8 @@ const config: Config = {
     '^.+\\.(js|jsx|mjs)$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    // Transform ESM modules used by msw in node_modules
-    '/node_modules/(?!(msw|@mswjs|until-async)/)'
+    // Transform ESM modules used by msw in node_modules (Windows/Posix separators)
+    '[/\\]node_modules[/\\](?!(msw|@mswjs|until-async)[/\\])'
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {

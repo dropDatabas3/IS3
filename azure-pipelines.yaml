@@ -22,7 +22,7 @@ pr:
 
 variables:
   agentPool: 'TP4_IS3'
-  nodeVersion: '20.12.0'      # compatible con Next 14.2.3
+  nodeVersion: '20.18.0'      # actualizado para compatibilidad con dependencias de Jest/msw
   goVersion: '1.22.6'         # cumple con go 1.22 de tu go.mod
   frontendPath: 'ucc-arq-soft-front'
   backendPath: 'ucc-soft-arch-golang'
@@ -114,6 +114,24 @@ stages:
         searchFolder: '$(System.DefaultWorkingDirectory)'
         testRunTitle: 'Frontend Tests'
         failTaskOnFailedTests: true
+
+    - task: PowerShell@2
+      displayName: 'Normalize Frontend Cobertura paths (avoid spaces issues)'
+      condition: succeededOrFailed()
+      inputs:
+        targetType: 'inline'
+        script: |
+          $file = "$(frontendPath)\coverage\cobertura-coverage.xml"
+          if (Test-Path $file) {
+            $content = Get-Content -Raw -Path $file
+            $root = "$(System.DefaultWorkingDirectory)"
+            $pattern = [Regex]::Escape($root)
+            $content = [Regex]::Replace($content, $pattern, ".")
+            $rootFwd = $root -replace '\\','/'
+            $patternFwd = [Regex]::Escape($rootFwd)
+            $content = [Regex]::Replace($content, $patternFwd, ".")
+            Set-Content -Path $file -Value $content -NoNewline
+          }
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Frontend Coverage (Cobertura)'
@@ -216,6 +234,24 @@ stages:
         searchFolder: '$(System.DefaultWorkingDirectory)'
         testRunTitle: 'Backend Tests'
         failTaskOnFailedTests: true
+
+    - task: PowerShell@2
+      displayName: 'Normalize Backend Cobertura paths (avoid spaces issues)'
+      condition: succeededOrFailed()
+      inputs:
+        targetType: 'inline'
+        script: |
+          $file = "$(backendPath)\coverage.cobertura.xml"
+          if (Test-Path $file) {
+            $content = Get-Content -Raw -Path $file
+            $root = "$(System.DefaultWorkingDirectory)"
+            $pattern = [Regex]::Escape($root)
+            $content = [Regex]::Replace($content, $pattern, ".")
+            $rootFwd = $root -replace '\\','/'
+            $patternFwd = [Regex]::Escape($rootFwd)
+            $content = [Regex]::Replace($content, $patternFwd, ".")
+            Set-Content -Path $file -Value $content -NoNewline
+          }
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Backend Coverage (Cobertura)'
