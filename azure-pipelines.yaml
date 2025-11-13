@@ -300,20 +300,75 @@ stages:
         targetType: 'inline'
         script: |
           $ErrorActionPreference = 'Stop'
+
+          Write-Host "[Backend Tests] Working directory: $(System.DefaultWorkingDirectory)"
+          Write-Host "[Backend Tests] Backend path: $(backendPath)"
+
           cd "$(backendPath)"
-          # Instalar herramientas para reportes JUnit y Cobertura
-          go install github.com/jstemmer/go-junit-report/v2@latest
-          go install github.com/boumenot/gocover-cobertura@latest
-          $gopath = (go env GOPATH)
-          $junitExe = Join-Path $gopath 'bin\go-junit-report.exe'
-          $cobExe = Join-Path $gopath 'bin\gocover-cobertura.exe'
-          # Ejecutar tests con cobertura y convertir a JUnit
-          if (-not (Test-Path "$(backendPath)\test-results")) { New-Item -ItemType Directory -Path "$(backendPath)\test-results" | Out-Null }
-          # Ejecuta tests y canaliza a junit (con exit code correcto)
-          powershell -NoLogo -NoProfile -Command "cd $(backendPath); go test ./... -v -coverprofile=coverage.out 2>&1 | & '$junitExe' -set-exit-code > junit-report.xml"
-          if ($LASTEXITCODE -ne 0) { throw "Unit tests failed" }
-          # Convertir coverage.out a Cobertura
-          & $cobExe -i coverage.out -o coverage.cobertura.xml
+
+          # 1) Ejecutar tests con cobertura básica (igual que local)
+          Write-Host "[Backend Tests] Running: go test ./..."
+          go test ./...
+          $exitCode = $LASTEXITCODE
+          Write-Host "[Backend Tests] go test exit code: $exitCode"
+          if ($exitCode -ne 0) {
+            throw "[Backend Tests] go test ./... failed with exit code $exitCode"
+          }
+
+          # 2) Ejecutar script de cobertura del repo para generar coverage.out / coverage.html
+          $scriptPath = Join-Path "$(System.DefaultWorkingDirectory)" "scripts\test_coverage.ps1"
+          if (Test-Path $scriptPath) {
+            Write-Host "[Backend Tests] Running coverage script: $scriptPath"
+            & $scriptPath
+            $covExit = $LASTEXITCODE
+            Write-Host "[Backend Tests] coverage script exit code: $covExit"
+            if ($covExit -ne 0) {
+              throw "[Backend Tests] test_coverage.ps1 failed with exit code $covExit"
+            }
+          } else {
+            Write-Warning "[Backend Tests] Coverage script not found at $scriptPath. Skipping coverage generation."
+          }
+
+          # 3) (Opcional) Generar JUnit + Cobertura si las herramientas están disponibles
+          try {
+            Write-Host "[Backend Tests] Installing go-junit-report and gocover-cobertura (optional)..."
+            go install github.com/jstemmer/go-junit-report/v2@latest
+            go install github.com/boumenot/gocover-cobertura@latest
+
+            $gopath   = (go env GOPATH)
+            $junitExe = Join-Path $gopath 'bin\go-junit-report.exe'
+            $cobExe   = Join-Path $gopath 'bin\gocover-cobertura.exe'
+
+            if (-not (Test-Path "$(backendPath)\test-results")) {
+              New-Item -ItemType Directory -Path "$(backendPath)\test-results" | Out-Null
+            }
+
+            # JUnit: re-ejecutar tests sólo para generar reporte JUnit, sin romper pipeline si falla esta parte
+            Write-Host "[Backend Tests] Generating JUnit report with go-junit-report..."
+            go test ./... -v > test-output.txt
+            $goTest2 = $LASTEXITCODE
+            Write-Host "[Backend Tests] go test (for JUnit) exit code: $goTest2"
+
+            if (Test-Path $junitExe) {
+              type test-output.txt | & $junitExe -set-exit-code > junit-report.xml
+              $junitExit = $LASTEXITCODE
+              Write-Host "[Backend Tests] go-junit-report exit code: $junitExit"
+            } else {
+              Write-Warning "[Backend Tests] go-junit-report.exe not found at $junitExe. Skipping JUnit generation."
+            }
+
+            # Cobertura XML desde coverage.out generado por el script de cobertura
+            if (Test-Path 'coverage.out' -and (Test-Path $cobExe)) {
+              Write-Host "[Backend Tests] Generating Cobertura XML from coverage.out..."
+              & $cobExe -i coverage.out -o coverage.cobertura.xml
+              $cobExit = $LASTEXITCODE
+              Write-Host "[Backend Tests] gocover-cobertura exit code: $cobExit"
+            } else {
+              Write-Warning "[Backend Tests] coverage.out or gocover-cobertura.exe not found. Skipping Cobertura XML."
+            }
+          } catch {
+            Write-Warning "[Backend Tests] Optional JUnit/Cobertura generation failed: $($_.Exception.Message)"
+          }
 
     - task: PublishTestResults@2
       displayName: 'Publish Backend Test Results (JUnit)'
