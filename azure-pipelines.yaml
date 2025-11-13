@@ -47,6 +47,14 @@ variables:
   backendUrlQA:   'https://backend-tp05-qa-palacio-nallar.azurewebsites.net'
   backendUrlProd: 'https://backend-tp05-prod-palacio-nallar.azurewebsites.net'
 
+  # FRONTEND (opcional): imagen y Web Apps
+  frontendImageName: 'is3-frontend'
+  # Completar con las Web Apps creadas para Front
+  frontendAppQA: 'front-tp05-qa-palacio-nallar'
+  frontendAppProd: 'front-tp05-prod-palacio-nallar'
+  frontendUrlQA: ''
+  frontendUrlProd: ''
+
 stages:
 - stage: CI
   displayName: 'Continuous Integration'
@@ -80,6 +88,49 @@ stages:
         npm run lint
       displayName: 'Run Frontend Linting'
       continueOnError: true
+
+    - task: PowerShell@2
+      displayName: 'Run Frontend Unit Tests (Jest → JUnit + Cobertura)'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $ErrorActionPreference = 'Stop'
+          cd "$(frontendPath)"
+          # Asegurar reporter JUnit disponible sin modificar package.json
+          npm i --no-save jest-junit
+          # Configurar salida JUnit y generar Cobertura + LCov
+          $env:CI = 'true'
+          $env:JEST_JUNIT_OUTPUT = "$(frontendPath)\test-results\junit.xml"
+          if (-not (Test-Path "$(frontendPath)\test-results")) { New-Item -ItemType Directory -Path "$(frontendPath)\test-results" | Out-Null }
+          # Ejecutar jest con reportes
+          npx jest --ci --reporters=default --reporters=jest-junit --coverage --coverageReporters=cobertura --coverageReporters=lcov
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Frontend Test Results (JUnit)'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '$(frontendPath)/test-results/junit.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        testRunTitle: 'Frontend Tests'
+        failTaskOnFailedTests: true
+
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish Frontend Coverage (Cobertura)'
+      condition: succeededOrFailed()
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(frontendPath)/coverage/cobertura-coverage.xml'
+        reportDirectory: '$(frontendPath)/coverage'
+        failIfCoverageEmpty: false
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Frontend Coverage'
+      condition: succeededOrFailed()
+      inputs:
+        PathtoPublish: '$(frontendPath)/coverage'
+        ArtifactName: 'frontend-coverage'
+        publishLocation: 'Container'
 
     - script: |
         cd $(frontendPath)
@@ -134,6 +185,54 @@ stages:
         go vet ./...
       displayName: 'Run Go Vet (Static Analysis)'
       continueOnError: true
+
+    - task: PowerShell@2
+      displayName: 'Run Backend Unit Tests (Go → JUnit + Cobertura)'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $ErrorActionPreference = 'Stop'
+          cd "$(backendPath)"
+          # Instalar herramientas para reportes JUnit y Cobertura
+          go install github.com/jstemmer/go-junit-report/v2@latest
+          go install github.com/boumenot/gocover-cobertura@latest
+          $gopath = (go env GOPATH)
+          $junitExe = Join-Path $gopath 'bin\go-junit-report.exe'
+          $cobExe = Join-Path $gopath 'bin\gocover-cobertura.exe'
+          # Ejecutar tests con cobertura y convertir a JUnit
+          if (-not (Test-Path "$(backendPath)\test-results")) { New-Item -ItemType Directory -Path "$(backendPath)\test-results" | Out-Null }
+          # Ejecuta tests y canaliza a junit (con exit code correcto)
+          powershell -NoLogo -NoProfile -Command "cd $(backendPath); go test ./... -v -coverprofile=coverage.out 2>&1 | & '$junitExe' -set-exit-code > junit-report.xml"
+          if ($LASTEXITCODE -ne 0) { throw "Unit tests failed" }
+          # Convertir coverage.out a Cobertura
+          & $cobExe -i coverage.out -o coverage.cobertura.xml
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Backend Test Results (JUnit)'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '$(backendPath)/junit-report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        testRunTitle: 'Backend Tests'
+        failTaskOnFailedTests: true
+
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish Backend Coverage (Cobertura)'
+      condition: succeededOrFailed()
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(backendPath)/coverage.cobertura.xml'
+        reportDirectory: '$(backendPath)'
+        failIfCoverageEmpty: false
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Backend Coverage'
+      condition: succeededOrFailed()
+      inputs:
+        PathtoPublish: '$(backendPath)/coverage.out'
+        ArtifactName: 'backend-coverage'
+        publishLocation: 'Container'
 
     - script: |
         cd $(backendPath)
@@ -194,13 +293,13 @@ stages:
 # TP05: Deploy QA → aprobación → Deploy PROD (Web Apps Linux containers)
 # ======================================================
 
-- stage: BuildAndPushBackend
+- stage: BuildAndPushImages
   displayName: 'TP08: Build & Push Backend to ACR'
   dependsOn: CI
   condition: succeeded()
   jobs:
   - job: BuildPush
-    displayName: 'Docker build/push (backend)'
+    displayName: 'Docker build/push (backend + frontend)'
     pool: { name: $(agentPool) }
     steps:
       - checkout: self
@@ -222,9 +321,19 @@ stages:
           tags: |
             $(imageTag)
 
+      - task: Docker@2
+        displayName: 'Build & Push Frontend'
+        inputs:
+          command: 'buildAndPush'
+          repository: '$(acrLoginServer)/$(frontendImageName)'
+          Dockerfile: '$(frontendPath)/Dockerfile'
+          buildContext: '$(frontendPath)'
+          tags: |
+            $(imageTag)
+
 - stage: Deploy_QA
   displayName: 'TP05: Deploy Backend to QA'
-  dependsOn: BuildAndPushBackend
+  dependsOn: BuildAndPushImages
   condition: succeeded()
   jobs:
   - deployment: DeployBackendQA
@@ -245,6 +354,7 @@ stages:
                 imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
                 appSettings: >
                   -PORT 8000
+                  -WEBSITES_PORT 8000
                   -ENV qa
                   -DATABASE_URL $(DATABASE_URL_QA)
 
@@ -257,6 +367,29 @@ stages:
                   Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
                   $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
                   if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+  - deployment: DeployFrontendQA
+    displayName: 'Deploy Frontend (QA)'
+    pool: { name: $(agentPool) }
+    dependsOn: DeployBackendQA
+    condition: and(succeeded(), ne(variables['frontendAppQA'], ''))
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureWebApp@1
+              displayName: 'Deploy Frontend QA (container)'
+              inputs:
+                azureSubscription: '$(azureSubscription)'
+                appName: '$(frontendAppQA)'
+                appType: 'webAppLinux'
+                runtimeStack: ''
+                imageName: '$(acrLoginServer)/$(frontendImageName):$(imageTag)'
+                appSettings: >
+                  -PORT 3000
+                  -WEBSITES_PORT 3000
+                  -NEXT_PUBLIC_API_URL https://$(backendAppQA).azurewebsites.net
 
 - stage: Deploy_PROD
   displayName: 'TP05: Deploy Backend to PROD (Approval)'
@@ -281,6 +414,7 @@ stages:
                 imageName: '$(acrLoginServer)/$(backendImageName):$(imageTag)'
                 appSettings: >
                   -PORT 8000
+                  -WEBSITES_PORT 8000
                   -ENV production
                   -DATABASE_URL $(DATABASE_URL_PROD)
 
@@ -293,3 +427,26 @@ stages:
                   Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
                   $resp = Invoke-WebRequest -Uri "$(backendUrlProd)/health" -UseBasicParsing
                   if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+  - deployment: DeployFrontendProd
+    displayName: 'Deploy Frontend (PROD)'
+    pool: { name: $(agentPool) }
+    dependsOn: DeployBackendProd
+    condition: and(succeeded(), ne(variables['frontendAppProd'], ''))
+    environment: 'PROD'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureWebApp@1
+              displayName: 'Deploy Frontend PROD (container)'
+              inputs:
+                azureSubscription: '$(azureSubscription)'
+                appName: '$(frontendAppProd)'
+                appType: 'webAppLinux'
+                runtimeStack: ''
+                imageName: '$(acrLoginServer)/$(frontendImageName):$(imageTag)'
+                appSettings: >
+                  -PORT 3000
+                  -WEBSITES_PORT 3000
+                  -NEXT_PUBLIC_API_URL https://$(backendAppProd).azurewebsites.net
