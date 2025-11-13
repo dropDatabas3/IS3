@@ -201,8 +201,7 @@ stages:
   jobs:
   - job: BuildPush
     displayName: 'Docker build/push (backend)'
-    pool:
-      vmImage: 'ubuntu-latest'
+    pool: { name: $(agentPool) }
     steps:
       - checkout: self
         clean: true
@@ -230,8 +229,7 @@ stages:
   jobs:
   - deployment: DeployBackendQA
     displayName: 'Deploy Backend (QA)'
-    pool:
-      vmImage: 'ubuntu-latest'
+    pool: { name: $(agentPool) }
     environment: 'QA'   # Environment QA en Azure DevOps (sin aprobación)
     strategy:
       runOnce:
@@ -267,8 +265,7 @@ stages:
   jobs:
   - deployment: DeployBackendProd
     displayName: 'Deploy Backend (PROD)'
-    pool:
-      vmImage: 'ubuntu-latest'
+    pool: { name: $(agentPool) }
     environment: 'PROD'  # Configurar aprobación manual en Environment PROD
     strategy:
       runOnce:
