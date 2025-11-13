@@ -172,7 +172,16 @@ stages:
             if ($xml -ne $null -and $xml.coverage) {
               # 1) Normalize <sources><source> => '.'
               if ($xml.coverage.sources -and $xml.coverage.sources.source) {
-                foreach ($src in @($xml.coverage.sources.source)) { $src.'#text' = "." }
+                foreach ($src in @($xml.coverage.sources.source)) {
+                  if ($src.'#text' -ne $null) {
+                    $src.'#text' = "."
+                  } elseif ($src.InnerText -ne $null) {
+                    # Algunos formatos exponen sólo InnerText
+                    $src.InnerText = "."
+                  } else {
+                    Write-Host "[Cobertura] <source> node without text to normalize, skipping"
+                  }
+                }
               }
 
               # 2) Normalize class filename attributes to be relative and POSIX separators
