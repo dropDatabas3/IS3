@@ -587,9 +587,32 @@ stages:
                 targetType: 'inline'
                 script: |
                   $ErrorActionPreference = 'Stop'
-                  Write-Host "Esperando 20s a que arranque..."; Start-Sleep -Seconds 20
-                  $resp = Invoke-WebRequest -Uri "$(backendUrlQA)/health" -UseBasicParsing
-                  if ($resp.StatusCode -ne 200) { throw "Health check FAILED: $($resp.StatusCode)" }
+
+                  $url = "$(backendUrlQA)/health"
+                  Write-Host "Health check URL: $url"
+
+                  $maxAttempts = 6
+                  $delaySeconds = 15
+
+                  for ($i = 1; $i -le $maxAttempts; $i++) {
+                    Write-Host "Intento $i de $maxAttempts - esperando $delaySeconds segundos antes de llamar a /health..."
+                    Start-Sleep -Seconds $delaySeconds
+
+                    try {
+                      $resp = Invoke-WebRequest -Uri $url -UseBasicParsing
+                      Write-Host "Respuesta: $($resp.StatusCode)"
+                      if ($resp.StatusCode -eq 200) {
+                        Write-Host "Health check OK"
+                        return
+                      } else {
+                        Write-Host "Health check devolvió $($resp.StatusCode), reintentando..."
+                      }
+                    } catch {
+                      Write-Host "Error en intento $i: $($_.Exception.Message)"
+                    }
+                  }
+
+                  throw "Health check FAILED después de $maxAttempts intentos contra $url"
 
   - deployment: DeployFrontendQA
     displayName: 'Deploy Frontend (QA)'
