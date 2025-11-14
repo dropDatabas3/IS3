@@ -73,6 +73,23 @@ stages:
     - checkout: self
       clean: true
       displayName: 'Checkout Source Code'
+      fetchDepth: 0
+
+    # ==============================
+    # SonarQube Cloud - Prepare CLI
+    # Analiza repo completo (front + back)
+    # ==============================
+    - task: SonarQubePrepare@7
+      displayName: 'Prepare analysis on SonarQube Cloud'
+      inputs:
+        SonarQube: 'Ingenieria de Software'
+        scannerMode: 'cli'
+        configMode: 'manual'
+        cliProjectKey: 'c4735560839385068_Ingenieria-de-Software-3'
+        cliProjectName: 'Ingenieria de Software 3'
+        extraProperties: |
+          sonar.organization=c4735560839385068
+          sonar.projectBaseDir=$(System.DefaultWorkingDirectory)
 
     - task: NodeTool@0
       displayName: 'Use Node.js $(nodeVersion)'
@@ -224,6 +241,18 @@ stages:
           } else {
             Write-Host "Cobertura file not found: $file (skip normalization)"
           }
+
+    # ==============================
+    # SonarQube Cloud - Run analysis
+    # ==============================
+    - task: SonarQubeAnalyze@7
+      displayName: 'Run SonarQube Cloud Code Analysis'
+
+    # Opcional: Quality Gate (PR decoration / status en build)
+    - task: SonarQubePublish@7
+      displayName: 'Publish SonarQube Quality Gate Result'
+      inputs:
+        pollingTimeoutSec: '300'
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish Frontend Coverage (Cobertura)'
