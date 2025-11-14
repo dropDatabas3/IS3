@@ -76,19 +76,18 @@ stages:
       fetchDepth: 0
 
     # ==============================
-    # SonarQube Cloud - Prepare CLI
-    # Analiza repo completo (front + back)
+    # SonarCloud - Prepare (CLI)
     # ==============================
-    - task: SonarQubePrepare@7
-      displayName: 'Prepare analysis on SonarQube Cloud'
+    - task: SonarCloudPrepare@1
+      displayName: 'Prepare analysis on SonarCloud'
       inputs:
-        SonarQube: 'Ingenieria de Software'
-        scannerMode: 'cli'
+        SonarCloud: 'Ingenieria de Software'
+        organization: 'c4735560839385068'
+        scannerMode: 'CLI'
         configMode: 'manual'
         cliProjectKey: 'c4735560839385068_Ingenieria-de-Software-3'
         cliProjectName: 'Ingenieria de Software 3'
         extraProperties: |
-          sonar.organization=c4735560839385068
           sonar.projectBaseDir=$(System.DefaultWorkingDirectory)
 
     - task: NodeTool@0
@@ -243,14 +242,14 @@ stages:
           }
 
     # ==============================
-    # SonarQube Cloud - Run analysis
+    # SonarCloud - Run analysis
     # ==============================
-    - task: SonarQubeAnalyze@7
-      displayName: 'Run SonarQube Cloud Code Analysis'
+    - task: SonarCloudAnalyze@1
+      displayName: 'Run SonarCloud Code Analysis'
 
     # Opcional: Quality Gate (PR decoration / status en build)
-    - task: SonarQubePublish@7
-      displayName: 'Publish SonarQube Quality Gate Result'
+    - task: SonarCloudPublish@1
+      displayName: 'Publish SonarCloud Quality Gate Result'
       inputs:
         pollingTimeoutSec: '300'
 
