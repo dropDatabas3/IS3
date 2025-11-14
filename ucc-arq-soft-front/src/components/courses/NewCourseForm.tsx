@@ -150,7 +150,11 @@ export const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
   };
 
   const handleAddCategory = (categoryName: string) => {
+    // Crear la categoría vía contexto
     newCategory(categoryName);
+
+    // Asociar el valor elegido en el select; asumimos que el backend
+    // devolverá luego un category_id coherente que se reflejará en `categories`.
     setCourseData((prevData) => ({
       ...prevData,
       category: categoryName,

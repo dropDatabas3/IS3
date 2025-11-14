@@ -540,7 +540,7 @@ stages:
 # ======================================================
 
 - stage: BuildAndPushImages
-  displayName: 'TP08: Build & Push Backend to ACR'
+  displayName: 'Build & Push to ACR'
   dependsOn: CI
   condition: succeeded()
   jobs:
@@ -578,7 +578,7 @@ stages:
             $(imageTag)
 
 - stage: Deploy_QA
-  displayName: 'TP05: Deploy Backend to QA'
+  displayName: 'Deploy to QA'
   dependsOn: BuildAndPushImages
   condition: succeeded()
   jobs:
@@ -681,7 +681,7 @@ stages:
                       "NEXT_PUBLIC_API_URL=https://$(backendAppQA).azurewebsites.net"
 
 - stage: Deploy_PROD
-  displayName: 'TP05: Deploy Backend to PROD (Approval)'
+  displayName: 'Deploy to PROD (Approval)'
   dependsOn: Deploy_QA
   condition: succeeded()
   jobs:
