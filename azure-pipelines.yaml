@@ -41,19 +41,22 @@ variables:
   backendImageName: 'is3-backend'
   imageTag: '$(Build.BuildId)'
 
-  # Web Apps Linux (containers) – Opción A
+  # Web Apps Linux (containers)
   backendAppQA:   'backend-tp05-qa-palacio-nallar'
   backendAppProd: 'backend-tp05-prod-palacio-nallar'
   backendUrlQA:   'https://backend-tp05-qa-palacio-nallar.azurewebsites.net'
   backendUrlProd: 'https://backend-tp05-prod-palacio-nallar.azurewebsites.net'
 
-  # FRONTEND (opcional): imagen y Web Apps
+  # FRONTEND: imagen y Web Apps
   frontendImageName: 'is3-frontend'
-  # Completar con las Web Apps creadas para Front
   frontendAppQA: 'front-tp05-qa-palacio-nallar'
   frontendAppProd: 'front-tp05-prod-palacio-nallar'
   frontendUrlQA: ''
   frontendUrlProd: ''
+
+  # Credenciales ACR (usuario fijo + password desde variable secreta)
+  acrUser: 'acrPalacioNallar'
+  acrPassword: '$(ACR_PASSWORD)'    # ACR_PASSWORD = secreto en Azure DevOps
 
 stages:
 - stage: CI
@@ -504,7 +507,7 @@ stages:
       displayName: 'Display Build Summary'
 
 # ======================================================
-# TP08: Build & Push backend (Go) → ACR
+# TP08: Build & Push backend/front → ACR
 # TP05: Deploy QA → aprobación → Deploy PROD (Web Apps Linux containers)
 # ======================================================
 
@@ -530,7 +533,7 @@ stages:
         displayName: 'Build & Push Backend'
         inputs:
           command: 'buildAndPush'
-          repository: '$(acrLoginServer)/$(backendImageName)'
+          repository: '$(backendImageName)'          # <- repo limpio en ACR: is3-backend
           Dockerfile: '$(backendPath)/Dockerfile'
           buildContext: '$(backendPath)'
           tags: |
@@ -540,7 +543,7 @@ stages:
         displayName: 'Build & Push Frontend'
         inputs:
           command: 'buildAndPush'
-          repository: '$(acrLoginServer)/$(frontendImageName)'
+          repository: '$(frontendImageName)'         # <- repo limpio en ACR: is3-frontend
           Dockerfile: '$(frontendPath)/Dockerfile'
           buildContext: '$(frontendPath)'
           tags: |
@@ -569,8 +572,10 @@ stages:
                   az webapp config container set `
                     --name $(backendAppQA) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --docker-custom-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) `
-                    --docker-registry-server-url https://$(acrLoginServer)
+                    --container-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) `
+                    --container-registry-url https://$(acrLoginServer) `
+                    --container-registry-user $(acrUser) `
+                    --container-registry-password $(acrPassword)
 
                   az webapp config appsettings set `
                     --name $(backendAppQA) `
@@ -634,8 +639,10 @@ stages:
                   az webapp config container set `
                     --name $(frontendAppQA) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --docker-custom-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) `
-                    --docker-registry-server-url https://$(acrLoginServer)
+                    --container-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) `
+                    --container-registry-url https://$(acrLoginServer) `
+                    --container-registry-user $(acrUser) `
+                    --container-registry-password $(acrPassword)
 
                   az webapp config appsettings set `
                     --name $(frontendAppQA) `
@@ -668,8 +675,10 @@ stages:
                   az webapp config container set `
                     --name $(backendAppProd) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --docker-custom-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) `
-                    --docker-registry-server-url https://$(acrLoginServer)
+                    --container-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) `
+                    --container-registry-url https://$(acrLoginServer) `
+                    --container-registry-user $(acrUser) `
+                    --container-registry-password $(acrPassword)
 
                   az webapp config appsettings set `
                     --name $(backendAppProd) `
@@ -710,8 +719,10 @@ stages:
                   az webapp config container set `
                     --name $(frontendAppProd) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --docker-custom-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) `
-                    --docker-registry-server-url https://$(acrLoginServer)
+                    --container-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) `
+                    --container-registry-url https://$(acrLoginServer) `
+                    --container-registry-user $(acrUser) `
+                    --container-registry-password $(acrPassword)
 
                   az webapp config appsettings set `
                     --name $(frontendAppProd) `
