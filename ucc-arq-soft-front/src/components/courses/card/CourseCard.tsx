@@ -15,9 +15,11 @@ const truncateText = (text: string, maxLength: number) => {
 export const CourseCard = ({ course , onClick}: Readonly<CourseCardProps>) => {
   const { user } = useContext(AuthContext);
   return (
-    <div
+    <button
+      type="button"
       key={course.id}
-      className="flex gap-5 bg-gray-300 m-3 mx-3 p-2 rounded-xl shadow-lg w-full max-h-80 2xl:w-[30vw] 2xl:min-h-96 cursor-pointer hover:shadow-2xl transition-all duration-300 ease-in-out"
+      data-test="course-card"
+      className="flex gap-5 bg-gray-300 m-3 mx-3 p-2 rounded-xl shadow-lg w-full max-h-80 2xl:w-[30vw] 2xl:min-h-96 cursor-pointer hover:shadow-2xl transition-all duration-300 ease-in-out text-left"
       onClick={onClick}
     >
       <div className="flex justify-between h-full">
@@ -32,7 +34,10 @@ export const CourseCard = ({ course , onClick}: Readonly<CourseCardProps>) => {
         />
         <div className="flex flex-col p-5 text-start">
           <div className="flex justify-between items-center mb-5">
-            <h1 className="text-lg font-semibold tracking-tighter capitalize">
+            <h1
+              className="text-lg font-semibold tracking-tighter capitalize"
+              data-test="course-card-title"
+            >
               {course.courseName}
             </h1>
             <p className="text-sm text-gray-500 text-pretty font-semibold">
@@ -46,6 +51,6 @@ export const CourseCard = ({ course , onClick}: Readonly<CourseCardProps>) => {
 
         </div>
       </div>
-    </div>
+    </button>
   );
 };

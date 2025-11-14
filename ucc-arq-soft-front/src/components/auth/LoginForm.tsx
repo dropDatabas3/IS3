@@ -44,6 +44,7 @@ export const LoginForm = () => {
 
   return (
     <form
+      data-test="login-form"
       className="flex flex-col gap-y-5 w-96 h-full"
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -51,6 +52,7 @@ export const LoginForm = () => {
         type="email"
         placeholder="Email"
         className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+        data-test="login-email-input"
         {...register("Email")}
       />
       {errors.Email && (
@@ -62,6 +64,7 @@ export const LoginForm = () => {
         type="password"
         placeholder="Password"
         className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+        data-test="login-password-input"
         {...register("Password")}
       />
       {errors.Password && (
@@ -69,7 +72,11 @@ export const LoginForm = () => {
           {errors.Password.message}
         </span>
       )}
-      <button className="p-3 bg-purple-700 text-white rounded-lg font-semibold tracking-wider hover:bg-opacity-80 transition-all duration-300 ease-in-out">
+      <button
+        type="submit"
+        data-test="login-submit-button"
+        className="p-3 bg-purple-700 text-white rounded-lg font-semibold tracking-wider hover:bg-opacity-80 transition-all duration-300 ease-in-out"
+      >
         Login
       </button>
       <div className="w-full text-end">

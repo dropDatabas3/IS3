@@ -131,6 +131,7 @@ export default function CoursePage() {
           </div>
           <div className="w-full mb-6">
           <button
+              data-test="course-enroll-button"
               className={`transition-all duration-300 ease-in-out ${
                 user && !isEnrolled
                   ? "bg-gradient-to-r from-purple-600 to-pink-600"

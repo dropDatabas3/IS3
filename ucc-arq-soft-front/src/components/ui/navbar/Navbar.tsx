@@ -1,10 +1,8 @@
 "use client";
-import { useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { NavbarButtons, NavBarMainButtons } from ".";
 import { useNavbar } from "@/utils";
-import { AuthContext } from "@/context";
 
 export const Navbar = () => {
   const {
@@ -27,7 +25,7 @@ export const Navbar = () => {
         font-bold p-5 shadow-lg rounded-xl z-10 
         transition-all duration-300 ease-out mt-1`}
     >
-      <Link className="flex items-center" href="/">
+      <Link className="flex items-center" href="/" data-test="navbar-home-link">
         <Image
           src="/assets/images/deer.png"
           alt="DuoMingo Logo"

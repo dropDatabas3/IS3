@@ -45,6 +45,7 @@ export const RegisterForm = () => {
 
   return (
     <form
+      data-test="register-form"
       className="flex flex-col gap-y-5 mt-5 w-96 h-full"
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -52,6 +53,7 @@ export const RegisterForm = () => {
         type="text"
         placeholder="Name"
         className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+        data-test="register-username-input"
         {...rhfRegister("Username")}
       />
       {errors.Username && (
@@ -63,6 +65,7 @@ export const RegisterForm = () => {
         type="email"
         placeholder="Email"
         className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+        data-test="register-email-input"
         {...rhfRegister("Email")}
       />
       {errors.Email && (
@@ -74,6 +77,7 @@ export const RegisterForm = () => {
         type="password"
         placeholder="Password"
         className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+        data-test="register-password-input"
         {...rhfRegister("Password")}
       />
       {errors.Password && (
@@ -81,7 +85,11 @@ export const RegisterForm = () => {
           {errors.Password.message}
         </span>
       )}
-      <button className="p-3 bg-purple-700 text-white rounded-lg font-semibold tracking-wider hover:bg-opacity-80 transition-all duration-300 ease-in-out">
+      <button
+        type="submit"
+        data-test="register-submit-button"
+        className="p-3 bg-purple-700 text-white rounded-lg font-semibold tracking-wider hover:bg-opacity-80 transition-all duration-300 ease-in-out"
+      >
         Register
       </button>
       <div className="w-full text-end">

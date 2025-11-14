@@ -1,3 +1,7 @@
-./ucc-soft-arch-golang/.env
+ucc-soft-arch-golang/.env
 
 Consigna_*
+
+ucc-arq-soft-front/.env
+ucc-arq-soft-front/cypress/results/
+ucc-arq-soft-front/cypress/screenshots/
