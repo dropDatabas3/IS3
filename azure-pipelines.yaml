@@ -608,7 +608,7 @@ stages:
                         Write-Host "Health check devolvió $($resp.StatusCode), reintentando..."
                       }
                     } catch {
-                      Write-Host "Error en intento $i: $($_.Exception.Message)"
+                      Write-Host ("Error en intento {0}: {1}" -f $i, $_.Exception.Message)
                     }
                   }
 
