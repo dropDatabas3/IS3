@@ -563,18 +563,18 @@ stages:
               displayName: 'Deploy Backend QA (container via Azure CLI)'
               inputs:
                 azureSubscription: '$(azureSubscription)'
-                scriptType: 'bash'
+                scriptType: 'ps'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az webapp config container set \
-                    --name $(backendAppQA) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
-                    --docker-custom-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) \
+                  az webapp config container set `
+                    --name $(backendAppQA) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
+                    --docker-custom-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) `
                     --docker-registry-server-url https://$(acrLoginServer)
 
-                  az webapp config appsettings set \
-                    --name $(backendAppQA) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
+                  az webapp config appsettings set `
+                    --name $(backendAppQA) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
                     --settings \
                       PORT=8000 \
                       WEBSITES_PORT=8000 \
@@ -605,18 +605,18 @@ stages:
               displayName: 'Deploy Frontend QA (container via Azure CLI)'
               inputs:
                 azureSubscription: '$(azureSubscription)'
-                scriptType: 'bash'
+                scriptType: 'ps'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az webapp config container set \
-                    --name $(frontendAppQA) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
-                    --docker-custom-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) \
+                  az webapp config container set `
+                    --name $(frontendAppQA) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
+                    --docker-custom-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) `
                     --docker-registry-server-url https://$(acrLoginServer)
 
-                  az webapp config appsettings set \
-                    --name $(frontendAppQA) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
+                  az webapp config appsettings set `
+                    --name $(frontendAppQA) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
                     --settings \
                       PORT=3000 \
                       WEBSITES_PORT=3000 \
@@ -639,18 +639,18 @@ stages:
               displayName: 'Deploy Backend PROD (container via Azure CLI)'
               inputs:
                 azureSubscription: '$(azureSubscription)'
-                scriptType: 'bash'
+                scriptType: 'ps'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az webapp config container set \
-                    --name $(backendAppProd) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
-                    --docker-custom-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) \
+                  az webapp config container set `
+                    --name $(backendAppProd) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
+                    --docker-custom-image-name $(acrLoginServer)/$(backendImageName):$(imageTag) `
                     --docker-registry-server-url https://$(acrLoginServer)
 
-                  az webapp config appsettings set \
-                    --name $(backendAppProd) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
+                  az webapp config appsettings set `
+                    --name $(backendAppProd) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
                     --settings \
                       PORT=8000 \
                       WEBSITES_PORT=8000 \
@@ -681,18 +681,18 @@ stages:
               displayName: 'Deploy Frontend PROD (container via Azure CLI)'
               inputs:
                 azureSubscription: '$(azureSubscription)'
-                scriptType: 'bash'
+                scriptType: 'ps'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az webapp config container set \
-                    --name $(frontendAppProd) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
-                    --docker-custom-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) \
+                  az webapp config container set `
+                    --name $(frontendAppProd) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
+                    --docker-custom-image-name $(acrLoginServer)/$(frontendImageName):$(imageTag) `
                     --docker-registry-server-url https://$(acrLoginServer)
 
-                  az webapp config appsettings set \
-                    --name $(frontendAppProd) \
-                    --resource-group rg-tp05-ingsoft3-2025 \
+                  az webapp config appsettings set `
+                    --name $(frontendAppProd) `
+                    --resource-group rg-tp05-ingsoft3-2025 `
                     --settings \
                       PORT=3000 \
                       WEBSITES_PORT=3000 \
