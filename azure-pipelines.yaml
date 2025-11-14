@@ -575,11 +575,11 @@ stages:
                   az webapp config appsettings set `
                     --name $(backendAppQA) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --settings \
-                      PORT=8000 \
-                      WEBSITES_PORT=8000 \
-                      ENV=qa \
-                      DATABASE_URL=$(DATABASE_URL_QA)
+                    --settings `
+                      "PORT=8000" `
+                      "WEBSITES_PORT=8000" `
+                      "ENV=qa" `
+                      "DATABASE_URL=$(DATABASE_URL_QA)"
 
             - task: PowerShell@2
               displayName: 'Health Check QA (/health)'
@@ -617,10 +617,10 @@ stages:
                   az webapp config appsettings set `
                     --name $(frontendAppQA) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --settings \
-                      PORT=3000 \
-                      WEBSITES_PORT=3000 \
-                      NEXT_PUBLIC_API_URL=https://$(backendAppQA).azurewebsites.net
+                    --settings `
+                      "PORT=3000" `
+                      "WEBSITES_PORT=3000" `
+                      "NEXT_PUBLIC_API_URL=https://$(backendAppQA).azurewebsites.net"
 
 - stage: Deploy_PROD
   displayName: 'TP05: Deploy Backend to PROD (Approval)'
@@ -651,11 +651,11 @@ stages:
                   az webapp config appsettings set `
                     --name $(backendAppProd) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --settings \
-                      PORT=8000 \
-                      WEBSITES_PORT=8000 \
-                      ENV=production \
-                      DATABASE_URL=$(DATABASE_URL_PROD)
+                    --settings `
+                      "PORT=8000" `
+                      "WEBSITES_PORT=8000" `
+                      "ENV=production" `
+                      "DATABASE_URL=$(DATABASE_URL_PROD)"
 
             - task: PowerShell@2
               displayName: 'Health Check PROD (/health)'
@@ -693,7 +693,7 @@ stages:
                   az webapp config appsettings set `
                     --name $(frontendAppProd) `
                     --resource-group rg-tp05-ingsoft3-2025 `
-                    --settings \
-                      PORT=3000 \
-                      WEBSITES_PORT=3000 \
-                      NEXT_PUBLIC_API_URL=https://$(backendAppProd).azurewebsites.net
+                    --settings `
+                      "PORT=3000" `
+                      "WEBSITES_PORT=3000" `
+                      "NEXT_PUBLIC_API_URL=https://$(backendAppProd).azurewebsites.net"
